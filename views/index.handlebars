@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="bg-blue-100 py-2">
+        <h1 class="text-center text-4xl bold text-blue-700">Waiter Schedule</h1>
+    </div>
+
+    <div>
+        <p class="mt-6">Days when waiters are available</p>
+    </div>
+
+    <div class="days mt-6 text-center">
+        {{#each days}}
+        <span class="daysofweek">{{this}} </span>
+        {{/each}}
+        {{#each names}}
+        <ul>
+            <li>{{this}}</li>
+            {{/each}}
+        </ul>
+    </div>
+</div>
