@@ -9,10 +9,11 @@ import bodyParser from 'body-parser';
 import flash from 'express-flash';
 import session from 'express-session';
 
+import db from './db/db_connect.js'
 //import ff logic
 import WaiterSchedule from './waiter.js';
 
-let waiterSchedule = WaiterSchedule();
+let waiterSchedule = WaiterSchedule(db);
 
 
 //instantiate express module
@@ -42,46 +43,48 @@ app.use(express.static('public'))
 
 //
 app.get('/', (req, res) => {
-    let days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-    let names = ['Asi', 'Sipho', 'Swatha', 'Lamb', 'Sihle', 'Ghost']
+    let username = waiterSchedule.getUser()
+    // let x = req.flash('info')[0];
+    console.log(waiterSchedule.getDays());
+    // let days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    // let names = ['Asi', 'Sipho', 'Swatha', 'Lamb', 'Sihle', 'Ghost']
     res.render('index', {
-        days: days,
-        names: names
+        days: waiterSchedule.getDays()
     })
 })
 //posting front to
 app.post('/waiters', (req, res) => {
     let username = req.body.username;
-
     waiterSchedule.valid_waiterName(username)
-
-
-    // console.log(username);
     res.redirect('/waiter/' + username)
 
 })
 
 app.get('/waiter/:username', (req, res) => {
     let username = req.params.username;
-    // console.log(username);
-    // console.log(waiterSchedule.getDays());
     res.render('waiter', {
         username
     })
-
+    // res.render('index', {
+    //     names: username
+    // })
+    // res.redirect('/')
 })
 
 app.post('/waiter/:username', (req, res) => {
     let username = waiterSchedule.getUser();
+    // req.flash('info',username)
+    let isValid = waiterSchedule.valid_waiterName(username)
+    // console.log(username);
     let checks = req.body.checks;
-    console.log(username + 'i');
+    // console.log(checks);
+    waiterSchedule.add_days(checks)
+    waiterSchedule.days(checks)
+    // console.log();
+        // res.redirect('/')
+  res.redirect('/')
 
-    let isValid = waiterSchedule.valid_waiterName()
-    if (isValid) {
-        waiterSchedule.add_days(checks)
-        // console.log(checks);
-    }
-    res.redirect('/waiter/' + username)
+    // res.redirect('/waiter/' + username)
 })
 
 
