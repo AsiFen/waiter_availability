@@ -8,13 +8,33 @@
     </div>
 
     <div class="days mt-6 text-center">
-        {{#each days}}
-        <span class="daysofweek">{{this}} </span>
-        {{/each}}
-        {{#each names}}
-        <ul>
-            <li>{{this}}</li>
-            {{/each}}
-        </ul>
+        <form action="/waiters" method="post">   
+        <div>
+            <label for="name">Enter name:<input type="text" value="" class="bg-neutral-300" name="username"></label>
+            <button type="submit">Enter</button>
+        </div>
+        </form>
+        {{!-- <table>
+            <thead>
+                <tr>
+                    <th>Day of the Week</th>
+                    <th>Waiters</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each days}}
+                <tr class="">
+                    <td class="daysofweek mt-2">{{this}}</td>
+                    <td>
+                        <ul>
+                            {{#each ../names}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table> --}}
     </div>
 </div>

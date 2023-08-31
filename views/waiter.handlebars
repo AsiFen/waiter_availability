@@ -1,0 +1,47 @@
+<div class="waiter_container">
+    <div class="heading">
+        <h1>Add Your Shift</h1>
+    </div>
+
+    <div class="selection">
+        <form action="/waiter/{{username}}" method="post">
+            <fieldset>
+                <legend>Choose 3 days:</legend>
+
+                <div>
+                    <input type="checkbox" id="monday" value="monday" name="checks" />
+                    <label for="monday">Monday</label>
+                </div>
+
+                <div>
+                    <input type="checkbox" id="Tuesday" value="Tuesday" name="checks" />
+                    <label for="Tuesday">Tuesday</label>
+                </div>
+
+                <div>
+                    <input type="checkbox" id="Wednesday" value="Wednesday" name="checks" />
+                    <label for="Wednesday">Wednesday</label>
+                </div>
+
+                <div>
+                    <input type="checkbox" id="Thursday" value="Thursday" name="checks" />
+                    <label for="Thursday">Thursday</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="Friday" value="Friday" name="checks" />
+                    <label for="Friday">Friday</label>
+                </div>
+
+                <div>
+                    <input type="checkbox" id="Saturday" value="Saturday" name="checks" />
+                    <label for="Saturday">Saturday</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="Sunday" value="Sunday" name="checks" />
+                    <label for="Sunday">Sunday</label>
+                </div>
+            </fieldset>
+            <button type="submit">done</button>
+        </form>
+    </div>
+</div>

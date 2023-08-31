@@ -9,8 +9,10 @@ import bodyParser from 'body-parser';
 import flash from 'express-flash';
 import session from 'express-session';
 
+//import ff logic
+import WaiterSchedule from './waiter.js';
 
-
+let waiterSchedule = WaiterSchedule();
 
 
 //instantiate express module
@@ -39,18 +41,49 @@ app.use(bodyParser.json())
 app.use(express.static('public'))
 
 //
-app.get('/', (req, res)=>{
-  let  days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday','saturday','sunday']
-  let names = ['Asi', 'Sipho', 'Swatha', 'Lamb', 'Sihle', 'Ghost']
-res.render('index',{
-    days: days,
-    names: names
+app.get('/', (req, res) => {
+    let days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    let names = ['Asi', 'Sipho', 'Swatha', 'Lamb', 'Sihle', 'Ghost']
+    res.render('index', {
+        days: days,
+        names: names
+    })
 })
+//posting front to
+app.post('/waiters', (req, res) => {
+    let username = req.body.username;
+
+    waiterSchedule.valid_waiterName(username)
+
+
+    // console.log(username);
+    res.redirect('/waiter/' + username)
+
 })
 
-app.get('/waiters/:username')
+app.get('/waiter/:username', (req, res) => {
+    let username = req.params.username;
+    // console.log(username);
+    // console.log(waiterSchedule.getDays());
+    res.render('waiter', {
+        username
+    })
 
-app.post('/waiters/:username')
+})
+
+app.post('/waiter/:username', (req, res) => {
+    let username = waiterSchedule.getUser();
+    let checks = req.body.checks;
+    console.log(username + 'i');
+
+    let isValid = waiterSchedule.valid_waiterName()
+    if (isValid) {
+        waiterSchedule.add_days(checks)
+        // console.log(checks);
+    }
+    res.redirect('/waiter/' + username)
+})
+
 
 
 //process the enviroment the port is running on
