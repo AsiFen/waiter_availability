@@ -46,7 +46,7 @@ app.get('/', (req, res) => {
     let username = waiterSchedule.getUser()
     // let x = req.flash('info')[0];
     console.log(waiterSchedule.getDays());
-    let days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    // let days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     // let names = ['Asi', 'Sipho', 'Swatha', 'Lamb', 'Sihle', 'Ghost']
     res.render('index', {
         days: waiterSchedule.getDays()
