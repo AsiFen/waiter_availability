@@ -1,6 +1,7 @@
 .daysofweek {
-padding: 1em;
-margin: 1em;
-border: royalblue;
+    width: 7em;
+padding: 0.6em;
+margin: 0.6em;
+border: royalblue solid 1px;
 background-color: lightblue;
 }

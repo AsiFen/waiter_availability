@@ -46,10 +46,11 @@ app.get('/', (req, res) => {
     let username = waiterSchedule.getUser()
     // let x = req.flash('info')[0];
     console.log(waiterSchedule.getDays());
-    // let days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    let days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     // let names = ['Asi', 'Sipho', 'Swatha', 'Lamb', 'Sihle', 'Ghost']
     res.render('index', {
         days: waiterSchedule.getDays()
+
     })
 })
 //posting front to
@@ -71,23 +72,21 @@ app.get('/waiter/:username', (req, res) => {
     // res.redirect('/')
 })
 
-app.post('/waiter/:username', (req, res) => {
+app.post('/waiter/:username',async (req, res) => {
     let username = waiterSchedule.getUser();
     // req.flash('info',username)
     let isValid = waiterSchedule.valid_waiterName(username)
     // console.log(username);
     let checks = req.body.checks;
     // console.log(checks);
-    waiterSchedule.add_days(checks)
-    waiterSchedule.days(checks)
+    // waiterSchedule.add_days(checks)
+   await waiterSchedule.days(checks)
     // console.log();
         // res.redirect('/')
   res.redirect('/')
 
     // res.redirect('/waiter/' + username)
 })
-
-
 
 //process the enviroment the port is running on
 let PORT = process.env.PORT || 1230;

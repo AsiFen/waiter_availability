@@ -15,13 +15,13 @@
             </div>
         </form>
     {{#each days}}
-        <div class="daysofweek">
-            <span>{{@key}}</span> <!-- Access the day of the week -->
-            <ul>
+        <div class="flex">
+            <span class="daysofweek">{{@key}}</span> <!-- Access the day of the week -->
+            <ol class="flex">
                 {{#each this}} <!-- Access the array of waiters for this day -->
-                <li>{{this}}</li>
+                <li class="py-2 ml-4 mr-4">{{this}}</li>
                 {{/each}}
-            </ul>
+            </ol>
         </div>
         {{/each}}
     </div>
