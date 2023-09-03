@@ -15,7 +15,6 @@ import WaiterSchedule from './waiter.js';
 
 let waiterSchedule = WaiterSchedule(db);
 
-
 //instantiate express module
 let app = express();
 //configuring the handlebars module 
@@ -42,18 +41,15 @@ app.use(bodyParser.json())
 app.use(express.static('public'))
 
 //
-app.get('/', (req, res) => {
-    let username = waiterSchedule.getUser()
-    // let x = req.flash('info')[0];
-    console.log(waiterSchedule.getDays());
-    // let days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-    // let names = ['Asi', 'Sipho', 'Swatha', 'Lamb', 'Sihle', 'Ghost']
+app.get('/', async (req, res) => {
+    let getDays = await waiterSchedule.getDays();
+    console.log(getDays);
     res.render('index', {
-        days: waiterSchedule.getDays()
+        days: getDays
 
     })
 })
-//posting front to
+
 app.post('/waiters', (req, res) => {
     let username = req.body.username;
     waiterSchedule.valid_waiterName(username)
@@ -66,24 +62,17 @@ app.get('/waiter/:username', (req, res) => {
     res.render('waiter', {
         username
     })
-    // res.render('index', {
-    //     names: username
-    // })
-    // res.redirect('/')
+
 })
 
-app.post('/waiter/:username',async (req, res) => {
+app.post('/waiter/:username', async (req, res) => {
     let username = waiterSchedule.getUser();
-    // req.flash('info',username)
     let isValid = waiterSchedule.valid_waiterName(username)
-    // console.log(username);
     let checks = req.body.checks;
-    // console.log(checks);
-    // waiterSchedule.add_days(checks)
-   await waiterSchedule.days(checks)
-    // console.log();
-        // res.redirect('/')
-  res.redirect('/')
+
+    await waiterSchedule.days(checks)
+
+    res.redirect('/')
 
     // res.redirect('/waiter/' + username)
 })

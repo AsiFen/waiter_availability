@@ -4,9 +4,8 @@
 -- );
 
 CREATE TABLE waiters(
-
-       username VARCHAR NOT NULL, 
-     weekday VARCHAR NOT NULL
-
+--  id serial PRIMARY KEY,
+ username VARCHAR NOT NULL, 
+ weekday VARCHAR NOT NULL
     -- FOREIGN KEY (username) REFERENCES admin(waiter)
 );
