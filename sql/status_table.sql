@@ -1,0 +1,5 @@
+CREATE TABLE status(
+    day VARCHAR NOT NULL,
+    color VARCHAR NOT NULL
+
+);

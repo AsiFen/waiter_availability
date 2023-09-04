@@ -47,7 +47,7 @@ app.get('/', async (req, res) => {
     let status_color = req.flash('status')[0];
 
     // console.log(status_color + 'x');
-    console.log(getDays);
+    // console.log(getDays);
     res.render('index', {
         status: status_color,
         days: getDays,
@@ -73,8 +73,8 @@ app.post('/waiter/:username', async (req, res) => {
     let username = waiterSchedule.getUser();
     let isValid = waiterSchedule.valid_waiterName(username)
     let checks = req.body.checks;
-    console.log(checks);   
-    await waiterSchedule.days(checks)
+    // console.log(checks);   
+    await waiterSchedule.days(checks, username)
 
     req.flash('errors', waiterSchedule.errors());
 
@@ -83,17 +83,7 @@ app.post('/waiter/:username', async (req, res) => {
     // res.redirect('/waiter/' + username)
 })
 
-// Route to handle checkbox updates
-app.post('/updateCheckboxes', async(req, res) => {
-    const { username, day, isChecked } = req.body;
-    console.log(username, day, isChecked );
-    try{
-        await db.none('UPDATE user_checkboxes SET is_checked = $1 WHERE username = $2 AND day = $3', [isChecked, username, day]);
 
-    } catch {
-
-    }
-})
 
 //process the enviroment the port is running on
 let PORT = process.env.PORT || 1230;

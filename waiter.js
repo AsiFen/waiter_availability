@@ -5,18 +5,15 @@ export default function WaiterSchedule(db) {
     let error_message = '';
 
     let hold = {
-        'Monday': { waiters: [], status: 'zinc' },
-        'Tuesday': { waiters: [], status: 'zinc' },
-        'Wednesday': { waiters: [], status: 'zinc' },
-        'Thursday': { waiters: [], status: 'zinc' },
-        'Friday': { waiters: [], status: 'zinc' },
-        'Saturday': { waiters: [], status: 'zinc' },
-        'Sunday': { waiters: [], status: 'zinc' }
+        'Monday': { waiters: [], status: '' },
+        'Tuesday': { waiters: [], status: '' },
+        'Wednesday': { waiters: [], status: '' },
+        'Thursday': { waiters: [], status: '' },
+        'Friday': { waiters: [], status: '' },
+        'Saturday': { waiters: [], status: '' },
+        'Sunday': { waiters: [], status: '' }
     };
 
-    Object.keys(hold).forEach(day => {
-        hold[day].isChecked = false;
-    });
 
     function isExisting(user_name) {
         if (getAllUsers().includes(user_name)) {
@@ -39,7 +36,7 @@ export default function WaiterSchedule(db) {
         }
     }
 
-    async function days(selectedDays) {
+    async function days(selectedDays, username) {
         let daysLength = selectedDays.length;
 
         if (daysLength === 3) {
@@ -47,14 +44,15 @@ export default function WaiterSchedule(db) {
                 const day = selectedDays[i];
 
                 selectedDays.forEach(day => {
-                    if (hold[day]) {
-                        hold[day].isChecked = true;
+                    if (day && username != undefined) {
+                        db.none('INSERT INTO checkedDays (waiter_name, day, isChecked VALUES($1, $2, $3)', [username, day, true])
                     }
                 });
 
                 if (hold[day]) {
-                    await db.any('INSERT INTO waiters (username, weekday) VALUES ($1, $2)', [user_name, day]);
+                    await db.none('INSERT INTO waiters (username, weekday) VALUES ($1, $2)', [user_name, day]);
                     hold[day].waiters.push(user_name);
+                    await db.none('INSERT INTO status (day, color) VALUES ($1,$2)', [day, getStatusColor(hold[day].waiters.length)])
                     hold[day].status = getStatusColor(hold[day].waiters.length); // Set status based on waiters count
                 }
             }
@@ -68,16 +66,18 @@ export default function WaiterSchedule(db) {
     }
 
     async function getDays() {
-        let results;
+        let results, color_result, getChecked;
         let daysofweek = Object.keys(hold)
         // console.log(daysofweek);
         for (let i = 0; i < daysofweek.length; i++) {
             if (daysofweek[i]) {
                 results = await db.any('SELECT username FROM waiters WHERE weekday=$1', [daysofweek[i]])
+                status = await db.any('SELECT color FROM status WHERE day=$1', [daysofweek[i]])
+                getChecked = await db.any('SELECT day FROM checkedDays WHERE waiter_name = $1 AND isChecked = $2', ['', true])
                 for (let j = 0; j < results.length; j++) {
-                    console.log(results[j].username);
+                    // console.log(results[j].username); 
+                    hold[daysofweek[i]].status = status[j].color;
                     hold[daysofweek[i]].waiters.push(results[j].username)
-
                 }
             }
         }
@@ -96,6 +96,9 @@ export default function WaiterSchedule(db) {
         else if (waitersCount > 3) {
             return 'red'
         }
+        else {
+            return 'teal'
+        }
     }
 
     function getUser() {
@@ -110,7 +113,8 @@ export default function WaiterSchedule(db) {
         return error_message
     }
 
-    function getStatus() {
+    async function getStatus() {
+        // let color_result = await db.one('SELECT color FROM status WHERE')
         return status;
     }
     return {
