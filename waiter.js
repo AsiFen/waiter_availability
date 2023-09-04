@@ -13,7 +13,7 @@ export default function WaiterSchedule(db) {
         'Sunday': { waiters: [], status: 'zinc' }
     };
 
-       Object.keys(hold).forEach(day => {
+    Object.keys(hold).forEach(day => {
         hold[day].isChecked = false;
     });
 
@@ -69,9 +69,11 @@ export default function WaiterSchedule(db) {
     async function getDays() {
         let results;
         let daysofweek = Object.keys(hold)
+        // console.log(daysofweek);
         for (let i = 0; i < daysofweek.length; i++) {
             results = await db.any('SELECT username FROM waiters WHERE weekday=$1', [daysofweek[i]])
-            hold[daysofweek[i]].waiters.push(results.name)
+            // hold[daysofweek[i]].waiters.push(results.username)
+            console.log(results.username);
         }
         return hold;
     }

@@ -46,8 +46,8 @@ app.get('/', async (req, res) => {
     req.flash('status', waiterSchedule.getStatus())
     let status_color = req.flash('status')[0];
 
-    console.log(status_color + 'x');
-    // console.log(getDays);
+    // console.log(status_color + 'x');
+    console.log(getDays);
     res.render('index', {
         status: status_color,
         days: getDays,
@@ -73,7 +73,7 @@ app.post('/waiter/:username', async (req, res) => {
     let username = waiterSchedule.getUser();
     let isValid = waiterSchedule.valid_waiterName(username)
     let checks = req.body.checks;
-    // console.log(checks);   
+    console.log(checks);   
     await waiterSchedule.days(checks)
 
     req.flash('errors', waiterSchedule.errors());
