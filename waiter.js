@@ -1,7 +1,21 @@
 export default function WaiterSchedule(db) {
     let user_name;
+    let status;
     let error_message = '';
-    let hold = { 'Monday': [], 'Tuesday': [], 'Wednesday': [], 'Thursday': [], 'Friday': [], 'Saturday': [], 'Sunday': [] };
+
+    let hold = {
+        'Monday': { waiters: [], status: 'zinc' },
+        'Tuesday': { waiters: [], status: 'zinc' },
+        'Wednesday': { waiters: [], status: 'zinc' },
+        'Thursday': { waiters: [], status: 'zinc' },
+        'Friday': { waiters: [], status: 'zinc' },
+        'Saturday': { waiters: [], status: 'zinc' },
+        'Sunday': { waiters: [], status: 'zinc' }
+    };
+
+       Object.keys(hold).forEach(day => {
+        hold[day].isChecked = false;
+    });
 
     function isExisting(user_name) {
         if (getAllUsers().includes(user_name)) {
@@ -24,24 +38,55 @@ export default function WaiterSchedule(db) {
         }
     }
 
-    async function days(days) {
-        for (let i = 0; i < days.length; i++) {
-            if (hold[days[i]]) {
-                await db.any('INSERT INTO waiters (username, weekday) VALUES ($1, $2)', [user_name, days[i]]);
-                hold[days[i]].push(user_name); // hold[days[i]] = [];
+    async function days(selectedDays) {
+        let daysLength = selectedDays.length;
+
+        if (daysLength === 3) {
+            for (let i = 0; i < daysLength; i++) {
+                const day = selectedDays[i];
+
+                selectedDays.forEach(day => {
+                    if (hold[day]) {
+                        hold[day].isChecked = true;
+                    }
+                });
+
+                if (hold[day]) {
+                    await db.any('INSERT INTO waiters (username, weekday) VALUES ($1, $2)', [user_name, day]);
+                    hold[day].waiters.push(user_name);
+                    hold[day].status = getStatusColor(hold[day].waiters.length); // Set status based on waiters count
+                }
             }
+        } else if (daysLength < 3) {
+            error_message = 'Please choose exactly 3 days';
+        } else if (daysLength > 3) {
+            error_message = 'Exceeded the expected number. Choose exactly 3 days';
+        } else if (daysLength === 0) {
+            error_message = 'Cannot leave blank! Please choose days';
         }
     }
 
     async function getDays() {
         let results;
         let daysofweek = Object.keys(hold)
-        console.log(daysofweek);
         for (let i = 0; i < daysofweek.length; i++) {
             results = await db.any('SELECT username FROM waiters WHERE weekday=$1', [daysofweek[i]])
-            hold[daysofweek[i]].push(results.name)
+            hold[daysofweek[i]].waiters.push(results.name)
         }
         return hold;
+    }
+
+    function getStatusColor(waitersCount) {
+        if (waitersCount === 0) {
+            return 'rose'; // Set to 'rose' when no waiters
+        } else if (waitersCount < 3) {
+            return 'orange'; // Set to 'orange' when fewer than 3 waiters
+        } else if (waitersCount === 3) {
+            return 'green'; // Set to 'green' when 3 or more waiters
+        }
+        else if (waitersCount > 3) {
+            return 'red'
+        }
     }
 
     function getUser() {
@@ -55,13 +100,19 @@ export default function WaiterSchedule(db) {
     function errors() {
         return error_message
     }
+
+    function getStatus() {
+        return status;
+    }
     return {
         valid_waiterName,
         getDays,
         getUser,
+        getStatusColor,
         days,
         getAllUsers,
         isExisting,
-        errors
+        errors,
+        getStatus
     }
 }

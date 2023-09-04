@@ -39,14 +39,19 @@ app.use(bodyParser.json())
 
 //built-in static middleware from ExpressJS to use static resources such as my CSS
 app.use(express.static('public'))
-
 //
 app.get('/', async (req, res) => {
     let getDays = await waiterSchedule.getDays();
-    console.log(getDays);
-    res.render('index', {
-        days: getDays
+    let error_message = req.flash('errors')[0];
+    req.flash('status', waiterSchedule.getStatus())
+    let status_color = req.flash('status')[0];
 
+    console.log(status_color + 'x');
+    // console.log(getDays);
+    res.render('index', {
+        status: status_color,
+        days: getDays,
+        error_messages: error_message
     })
 })
 
@@ -62,19 +67,32 @@ app.get('/waiter/:username', (req, res) => {
     res.render('waiter', {
         username
     })
-
 })
 
 app.post('/waiter/:username', async (req, res) => {
     let username = waiterSchedule.getUser();
     let isValid = waiterSchedule.valid_waiterName(username)
     let checks = req.body.checks;
-
+    // console.log(checks);   
     await waiterSchedule.days(checks)
+
+    req.flash('errors', waiterSchedule.errors());
 
     res.redirect('/')
 
     // res.redirect('/waiter/' + username)
+})
+
+// Route to handle checkbox updates
+app.post('/updateCheckboxes', async(req, res) => {
+    const { username, day, isChecked } = req.body;
+    console.log(username, day, isChecked );
+    try{
+        await db.none('UPDATE user_checkboxes SET is_checked = $1 WHERE username = $2 AND day = $3', [isChecked, username, day]);
+
+    } catch {
+
+    }
 })
 
 //process the enviroment the port is running on

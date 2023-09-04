@@ -2,46 +2,63 @@
     <div class="heading">
         <h1>Add Your Shift</h1>
     </div>
-
     <div class="selection">
         <form action="/waiter/{{username}}" method="post">
             <fieldset class="border border-solid border-gray-500 p-5">
                 <legend>Choose 3 days:</legend>
-
                 <div>
-                    <input type="checkbox" id="monday" value="Monday" name="checks" />
-                    <label for="monday">Monday</label>
+                    <input type="checkbox" id="MondayCheckbox" value="Monday" name="checks" />
+                    <label for="Monday">Monday</label>
                 </div>
-
                 <div>
-                    <input type="checkbox" id="Tuesday" value="Tuesday" name="checks" />
+                    <input type="checkbox" id="TuesdayCheckbox" value="Tuesday" name="checks" />
                     <label for="Tuesday">Tuesday</label>
                 </div>
-
                 <div>
-                    <input type="checkbox" id="Wednesday" value="Wednesday" name="checks" />
+                    <input type="checkbox" id="WednesdayCheckbox" value="Wednesday" name="checks" />
                     <label for="Wednesday">Wednesday</label>
                 </div>
 
                 <div>
-                    <input type="checkbox" id="Thursday" value="Thursday" name="checks" />
+                    <input type="checkbox" id="ThursdayCheckbox" value="Thursday" name="checks" />
                     <label for="Thursday">Thursday</label>
                 </div>
                 <div>
-                    <input type="checkbox" id="Friday" value="Friday" name="checks" />
+                    <input type="checkbox" id="FridayCheckbox" value="Friday" name="checks" />
                     <label for="Friday">Friday</label>
                 </div>
 
                 <div>
-                    <input type="checkbox" id="Saturday" value="Saturday" name="checks" />
+                    <input type="checkbox" id="SaturdayCheckbox" value="Saturday" name="checks" />
                     <label for="Saturday">Saturday</label>
                 </div>
+                
                 <div>
-                    <input type="checkbox" id="Sunday" value="Sunday" name="checks" />
+                    <input type="checkbox" id="SundayCheckbox" value="Sunday" name="checks" />
                     <label for="Sunday">Sunday</label>
                 </div>
+
             </fieldset>
             <button type="submit">done</button>
         </form>
+        <script>
+            // Function to handle checkbox state
+            function handleCheckboxState() {
+                const checkboxes = document.querySelectorAll("input[type='checkbox']");
+                checkboxes.forEach((checkbox) => {
+                    // Check if a corresponding checkbox value is saved in localStorage
+                    const checkboxValue = localStorage.getItem(checkbox.value);
+                    if (checkboxValue === "true") {
+                        checkbox.checked = true;
+                    }
+                    // Add an event listener to save checkbox state when clicked
+                    checkbox.addEventListener("change", () => {
+                        localStorage.setItem(checkbox.value, checkbox.checked);
+                    });
+                });
+            }
+            // Call the function to handle checkbox state when the page loads
+            handleCheckboxState();
+        </script>
     </div>
 </div>
