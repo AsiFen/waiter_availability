@@ -40,8 +40,8 @@ app.use(bodyParser.json())
 //built-in static middleware from ExpressJS to use static resources such as my CSS
 app.use(express.static('public'))
 //
+let getDays = await waiterSchedule.getDays();
 app.get('/', async (req, res) => {
-    let getDays = await waiterSchedule.getDays();
     let error_message = req.flash('errors')[0];
     req.flash('status', waiterSchedule.getStatus())
     let status_color = req.flash('status')[0];

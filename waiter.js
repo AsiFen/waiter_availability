@@ -1,3 +1,4 @@
+
 export default function WaiterSchedule(db) {
     let user_name;
     let status;
@@ -71,10 +72,16 @@ export default function WaiterSchedule(db) {
         let daysofweek = Object.keys(hold)
         // console.log(daysofweek);
         for (let i = 0; i < daysofweek.length; i++) {
-            results = await db.any('SELECT username FROM waiters WHERE weekday=$1', [daysofweek[i]])
-            // hold[daysofweek[i]].waiters.push(results.username)
-            console.log(results.username);
+            if (daysofweek[i]) {
+                results = await db.any('SELECT username FROM waiters WHERE weekday=$1', [daysofweek[i]])
+                for (let j = 0; j < results.length; j++) {
+                    console.log(results[j].username);
+                    hold[daysofweek[i]].waiters.push(results[j].username)
+
+                }
+            }
         }
+        console.log(hold);
         return hold;
     }
 
