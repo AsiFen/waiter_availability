@@ -23,7 +23,7 @@
         {{#each days}}
         <div
             class="flex daysofweek mr-2 border border-neutral-700 border-solid py-1 {{#if this.status}}bg-{{this.status}}-500{{/if}}">
-            <span class="text-xl bold">{{@key}}</span>
+            <span class="text-xl bold">{{this.weekday}}</span>
             <ol class="flex list-decimal ml-6">
                 {{#each this.waiters}} <!-- Access the array of waiters for this day -->
                 <a href="/waiter/{{this}}">
