@@ -63,15 +63,13 @@ app.post('/waiters', async (req, res) => {
 app.get('/waiter/:username', async (req, res) => {
     const username = req.params.username;
     const daysofweek = await waiterSchedule.getWeekDays();
-    let issa = waiterSchedule.days();
+    let schedule = waiterSchedule.checked(username);
     // const isSelected = await waiterSchedule.getWeekDays(waiterSchedule.getSelectedDays());
-    let y = req.flash('x')[0]
-    console.log(y+'y');
+console.log(schedule);
     res.render('waiter', {
         username,
         daysofweek,
-        issa,
-        y
+        schedule
         // isSelected, // Pass the checkbox state to the template
     });
 });
@@ -80,9 +78,8 @@ app.post('/waiter/:username', async (req, res) => {
     let username = waiterSchedule.getUser();
     let isValid = waiterSchedule.valid_waiterName(username)
     let checks = req.body.checks;
-    let x = await waiterSchedule.days(checks, username)
-    console.log('x'+x);
-    req.flash('x', x)
+    await waiterSchedule.days(checks, username)
+
     req.flash('errors', waiterSchedule.errors());
 
     // res.redirect('/')

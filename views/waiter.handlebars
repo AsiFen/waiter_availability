@@ -2,21 +2,24 @@
     <div class="heading">
         <h1>Add Your Shift</h1>
     </div>
+
+    
     <div class="selection">
         <form action="/waiter/{{username}}" method="post">
             <fieldset class="border border-solid border-gray-500 p-5">
-                <legend>Choose 3 days:</legend>
-                <!-- HTML code for the checkboxes -->
-                {{#each y}}
+                <legend>Choose 3 this:</legend>
+                <!-- Loop through the thiss of the week and their properties -->
+                {{#each schedule}}
+                {{#each this}}
                 <div>
-                    <input type="checkbox" id="{{@key}}" value="{{@key}}" name="checks" {{#if this}} checked {{/if}} />
+                    <p>{{username}}</p>
+                    <input type="checkbox" id="{{@key}}" value="{{@key}}" name="checks" {{#if value}} checked {{/if}} />
                     <label for="{{@key}}">{{@key}}</label>
                 </div>
                 {{/each}}
-
+                {{/each}}
             </fieldset>
             <button type="submit">done</button>
         </form>
-
     </div>
 </div>

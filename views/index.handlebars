@@ -7,21 +7,7 @@
         <p class="mt-6">Days when waiters are available</p>
     </div>
 
-    <div class="error-messages text-center">
-        <span class="border border-red-600 rounded-full text-red-500 bg-rose-300">
-            {{error_messages}}
-        </span>
-    </div>
-
-    <div class="days mt-6 text-center">
-        <form action="/waiters" method="post">
-            <div>
-                <label for="name">Enter name:<input type="text" value="" class="bg-blue-100" name="username"></label>
-                <button type="submit" class="border border-solid bg-blue-300 py-2 rounded">Enter</button>
-            </div>
-        </form>
-
-
+ 
         {{#each days}}
         <div
             class="flex daysofweek mr-2 border border-neutral-700 border-solid py-1 {{#if this.status}}bg-{{this.status}}-500{{/if}}">
