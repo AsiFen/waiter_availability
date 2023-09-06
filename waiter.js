@@ -4,15 +4,16 @@ export default function WaiterSchedule(db) {
     let user_name;
     let status;
     let error_message = '';
-    let hold2 = {
-        'Monday': false,
-        'Tuesday': false,
-        'Wednesday': false,
-        'Thursday': false,
-        'Friday': false,
-        'Saturday': false,
-        'Sunday': false
-    };
+    let hold2 = {}
+    // let hold = {
+    //     'Monday': { waiters: [], status: '' },
+    //     'Tuesday': { waiters: [], status: '' },
+    //     'Wednesday': { waiters: [], status: '' },
+    //     'Thursday': { waiters: [], status: '' },
+    //     'Friday': { waiters: [], status: '' },
+    //     'Saturday': { waiters: [], status: '' },
+    //     'Sunday': { waiters: [], status: '' }
+    // };
 
     // function isExisting(user_name,) {
     //     console.log(getAllUsers());
@@ -41,7 +42,15 @@ export default function WaiterSchedule(db) {
         let daysLength = selectedDays.length;
 
         if (daysLength === 3) {
-     
+            let hold2 = {
+                'Monday': false,
+                'Tuesday': false,
+                'Wednesday': false,
+                'Thursday': false,
+                'Friday': false,
+                'Saturday': false,
+                'Sunday': false
+            };
             let waiter_id = await getWaiterId(username);
             // Loop through the selected days and update hold2
             for (let i = 0; i < daysLength; i++) {
@@ -50,6 +59,8 @@ export default function WaiterSchedule(db) {
                     hold2[day] = true;
                 }
                 // Now, hold2 will have true for selected days and false for others
+                console.log(hold2);
+
                 let weekday_id = await getWeekDayId(day)
                 db.none('INSERT INTO schedule (waiter_id, weekday_id) VALUES ($1, $2)', [waiter_id, weekday_id.id])
             }
@@ -61,6 +72,8 @@ export default function WaiterSchedule(db) {
         } else if (daysLength === 0) {
             error_message = 'Cannot leave blank! Please choose days';
         }
+
+        return hold2;
     }
     async function getWeekDayId(weekday) {
         let result = await db.one('SELECT id FROM weekdays WHERE weekday=$1', [weekday])
@@ -151,11 +164,12 @@ export default function WaiterSchedule(db) {
     function getSelectedDays() {
         return selected_days;
     }
-    function getChecked() {
-        return hold2;
+    function checked() {
+        return hold2
     }
+
     return {
-        getChecked,
+        checked,
         getSelectedDays,
         valid_waiterName,
         getDays,

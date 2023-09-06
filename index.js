@@ -62,16 +62,17 @@ app.post('/waiters', async (req, res) => {
 })
 app.get('/waiter/:username', async (req, res) => {
     const username = req.params.username;
-    const daysOfWeek = await waiterSchedule.getWeekDays();
-    const getChecked = waiterSchedule.getChecked();
-    const isSelected = await waiterSchedule.getWeekDays(waiterSchedule.getSelectedDays());
-
-console.log(getChecked);
+    const daysofweek = await waiterSchedule.getWeekDays();
+    let issa = waiterSchedule.days();
+    // const isSelected = await waiterSchedule.getWeekDays(waiterSchedule.getSelectedDays());
+    let y = req.flash('x')[0]
+    console.log(y+'y');
     res.render('waiter', {
         username,
-        daysOfWeek,
-        getChecked,
-        isSelected, // Pass the checkbox state to the template
+        daysofweek,
+        issa,
+        y
+        // isSelected, // Pass the checkbox state to the template
     });
 });
 
@@ -79,13 +80,14 @@ app.post('/waiter/:username', async (req, res) => {
     let username = waiterSchedule.getUser();
     let isValid = waiterSchedule.valid_waiterName(username)
     let checks = req.body.checks;
-    await waiterSchedule.days(checks, username)
-
+    let x = await waiterSchedule.days(checks, username)
+    console.log('x'+x);
+    req.flash('x', x)
     req.flash('errors', waiterSchedule.errors());
 
-    res.redirect('/')
+    // res.redirect('/')
 
-    // res.redirect('/waiter/' + username)
+    res.redirect('/waiter/' + username)
 })
 
 //process the enviroment the port is running on

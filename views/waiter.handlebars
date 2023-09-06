@@ -7,7 +7,7 @@
             <fieldset class="border border-solid border-gray-500 p-5">
                 <legend>Choose 3 days:</legend>
                 <!-- HTML code for the checkboxes -->
-                {{#each isSelected}}
+                {{#each y}}
                 <div>
                     <input type="checkbox" id="{{@key}}" value="{{@key}}" name="checks" {{#if this}} checked {{/if}} />
                     <label for="{{@key}}">{{@key}}</label>
