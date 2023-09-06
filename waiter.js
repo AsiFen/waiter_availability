@@ -1,18 +1,18 @@
 
 export default function WaiterSchedule(db) {
+    let selected_days;
     let user_name;
     let status;
     let error_message = '';
-
-    // let hold = {
-    //     'Monday': { waiters: [], status: '' },
-    //     'Tuesday': { waiters: [], status: '' },
-    //     'Wednesday': { waiters: [], status: '' },
-    //     'Thursday': { waiters: [], status: '' },
-    //     'Friday': { waiters: [], status: '' },
-    //     'Saturday': { waiters: [], status: '' },
-    //     'Sunday': { waiters: [], status: '' }
-    // };
+    let hold2 = {
+        'Monday': false,
+        'Tuesday': false,
+        'Wednesday': false,
+        'Thursday': false,
+        'Friday': false,
+        'Saturday': false,
+        'Sunday': false
+    };
 
     // function isExisting(user_name,) {
     //     console.log(getAllUsers());
@@ -37,29 +37,23 @@ export default function WaiterSchedule(db) {
     }
 
     async function days(selectedDays, username) {
+        selected_days = selectedDays;
         let daysLength = selectedDays.length;
 
         if (daysLength === 3) {
-
+     
             let waiter_id = await getWaiterId(username);
-            // console.log(waiter_id);
+            // Loop through the selected days and update hold2
             for (let i = 0; i < daysLength; i++) {
                 const day = selectedDays[i];
-
+                if (hold2.hasOwnProperty(day)) {
+                    hold2[day] = true;
+                }
+                // Now, hold2 will have true for selected days and false for others
                 let weekday_id = await getWeekDayId(day)
                 db.none('INSERT INTO schedule (waiter_id, weekday_id) VALUES ($1, $2)', [waiter_id, weekday_id.id])
-                // selectedDays.forEach(day => {
-                //     if (day && username != undefined) {
-                //     }
-                // });
-
-                // if (hold[day]) {
-                // await db.none('INSERT INTO waiters (username, weekday) VALUES ($1, $2)', [user_name, day]);
-                //     hold[day].waiters.push(user_name);
-                //     await db.none('INSERT INTO status (day, color) VALUES ($1,$2)', [day, getStatusColor(hold[day].waiters.length)])
-                //     hold[day].status = getStatusColor(hold[day].waiters.length); // Set status based on waiters count
-                // }
             }
+
         } else if (daysLength < 3) {
             error_message = 'Please choose exactly 3 days';
         } else if (daysLength > 3) {
@@ -80,7 +74,6 @@ export default function WaiterSchedule(db) {
                 `;
 
         const results = await db.any(daysQuery);
-        console.log(results);
         const hold = {
             'Monday': { waiters: [], status: '' },
             'Tuesday': { waiters: [], status: '' },
@@ -91,41 +84,18 @@ export default function WaiterSchedule(db) {
             'Sunday': { waiters: [], status: '' },
         };
 
+
         for (const row of results) {
             const { weekday, username } = row;
-            console.log(username);
             if (hold[weekday]) {
                 hold[weekday].waiters.push(username);
                 hold[weekday].status = getStatusColor(hold[weekday].waiters.length); // Set status based on waiters count
-
             }
         }
         return hold;
 
     }
 
-    // async function getDays() {
-
-    //     let results, getChecked;
-    //     let daysofweek = Object.keys(hold)
-    //     // console.log(daysofweek);
-    //     for (let i = 0; i < daysofweek.length; i++) {
-    //         if (daysofweek[i]) {
-    //             results = await db.any('SELECT username FROM waiters WHERE weekday=$1', [daysofweek[i]])
-    //             status = await db.any('SELECT color FROM status WHERE day=$1', [daysofweek[i]])
-    //             for (let j = 0; j < results.length; j++) {
-    //                 getChecked = await db.any('SELECT DISTINCT day FROM checkedDays WHERE waiter_name = $1 AND isChecked = $2', [results[j].username, true])
-    //                 console.log(getChecked);
-    //                 // console.log(results[j].username); 
-    //                 console.log(status[j]);
-    //                  hold[daysofweek[i]].status = status[j].color;
-    //                 hold[daysofweek[i]].waiters.push(results[j].username)
-    //             }
-    //         }
-    //     }
-    //     // console.log(hold);
-    //     return hold;
-    // }
     async function getWaiterId(username) {
         const result = await db.oneOrNone('SELECT id FROM waiters WHERE username = $1', [username]);
         if (result) {
@@ -153,7 +123,8 @@ export default function WaiterSchedule(db) {
         }
     }
     async function getWeekDays() {
-        return await db.many('SELECT weekday FROM weekdays');
+        let results = await db.many('SELECT weekday FROM weekdays');
+        return results;
     }
 
     async function setWaiter(user_name) {
@@ -176,7 +147,16 @@ export default function WaiterSchedule(db) {
         // let color_result = await db.one('SELECT color FROM status WHERE')
         return status;
     }
+
+    function getSelectedDays() {
+        return selected_days;
+    }
+    function getChecked() {
+        return hold2;
+    }
     return {
+        getChecked,
+        getSelectedDays,
         valid_waiterName,
         getDays,
         getUser,

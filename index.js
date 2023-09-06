@@ -40,9 +40,7 @@ app.use(express.static('public'))
 
 app.get('/', async (req, res) => {
     let getDays = await waiterSchedule.getDays();
-    console.log(getDays);
-    let x = await waiterSchedule.getWeekDays();
-    // console.log(x);
+    // console.log(getDays);
     let error_message = req.flash('errors')[0];
     req.flash('status', waiterSchedule.getStatus())
     let status_color = req.flash('status')[0];
@@ -58,17 +56,24 @@ app.post('/waiters', async (req, res) => {
     let username = req.body.username;
     waiterSchedule.valid_waiterName(username)
     await waiterSchedule.setWaiter(username);
-   await waiterSchedule.getWaiterId(username)
+    await waiterSchedule.getWaiterId(username)
     res.redirect('/waiter/' + username)
 
 })
+app.get('/waiter/:username', async (req, res) => {
+    const username = req.params.username;
+    const daysOfWeek = await waiterSchedule.getWeekDays();
+    const getChecked = waiterSchedule.getChecked();
+    const isSelected = await waiterSchedule.getWeekDays(waiterSchedule.getSelectedDays());
 
-app.get('/waiter/:username', (req, res) => {
-    let username = req.params.username;
+console.log(getChecked);
     res.render('waiter', {
-        username
-    })
-})
+        username,
+        daysOfWeek,
+        getChecked,
+        isSelected, // Pass the checkbox state to the template
+    });
+});
 
 app.post('/waiter/:username', async (req, res) => {
     let username = waiterSchedule.getUser();

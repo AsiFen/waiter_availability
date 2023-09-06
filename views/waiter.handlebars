@@ -6,44 +6,17 @@
         <form action="/waiter/{{username}}" method="post">
             <fieldset class="border border-solid border-gray-500 p-5">
                 <legend>Choose 3 days:</legend>
+                <!-- HTML code for the checkboxes -->
+                {{#each isSelected}}
                 <div>
-                    <input type="checkbox" id="MondayCheckbox" value="Monday" name="checks" />
-                    <label for="Monday">Monday</label>
+                    <input type="checkbox" id="{{@key}}" value="{{@key}}" name="checks" {{#if this}} checked {{/if}} />
+                    <label for="{{@key}}">{{@key}}</label>
                 </div>
-                
-                <div>
-                    <input type="checkbox" id="TuesdayCheckbox" value="Tuesday" name="checks" />
-                    <label for="Tuesday">Tuesday</label>
-                </div>
-
-                <div>
-                    <input type="checkbox" id="WednesdayCheckbox" value="Wednesday" name="checks" />
-                    <label for="Wednesday">Wednesday</label>
-                </div>
-
-                <div>
-                    <input type="checkbox" id="ThursdayCheckbox" value="Thursday" name="checks" />
-                    <label for="Thursday">Thursday</label>
-                </div>
-
-                <div>
-                    <input type="checkbox" id="FridayCheckbox" value="Friday" name="checks" />
-                    <label for="Friday">Friday</label>
-                </div>
-
-                <div>
-                    <input type="checkbox" id="SaturdayCheckbox" value="Saturday" name="checks" />
-                    <label for="Saturday">Saturday</label>
-                </div>
-                
-                <div>
-                    <input type="checkbox" id="SundayCheckbox" value="Sunday" name="checks" />
-                    <label for="Sunday">Sunday</label>
-                </div>
+                {{/each}}
 
             </fieldset>
             <button type="submit">done</button>
         </form>
-       
+
     </div>
 </div>
