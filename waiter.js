@@ -14,14 +14,15 @@ export default function WaiterSchedule(db) {
     //     'Sunday': { waiters: [], status: '' }
     // };
 
-    function isExisting(user_name) {
-        if (getAllUsers().includes(user_name)) {
-            valid_waiterName(user_name)
-        }
-        else {
-            error_message = 'Username already exists!'
-        }
-    }
+    // function isExisting(user_name,) {
+    //     console.log(getAllUsers());
+    //     if (getAllUsers()) {
+    //         valid_waiterName(user_name)
+    //     }
+    //     else {
+    //         error_message = 'Username already exists!'
+    //     }
+    // }
 
     function valid_waiterName(username) {
         let pattern = /^[a-zA-Z]+$/
@@ -38,18 +39,15 @@ export default function WaiterSchedule(db) {
     async function days(selectedDays, username) {
         let daysLength = selectedDays.length;
 
-
         if (daysLength === 3) {
 
             let waiter_id = await getWaiterId(username);
-
+// console.log(waiter_id);
             for (let i = 0; i < daysLength; i++) {
                 const day = selectedDays[i];
-                //          console.log(day);
-                let weekday_id = await getWeekDayId(day)
-                console.log(weekday_id);
 
-                db.none('INSERT INTO schedule (waiter_id, weekday_id) VALUES ($1, $2)', [waiter_id.id, weekday_id.id])
+                let weekday_id = await getWeekDayId(day)
+                db.none('INSERT INTO schedule (waiter_id, weekday_id) VALUES ($1, $2)', [waiter_id, weekday_id.id])
                 // selectedDays.forEach(day => {
                 //     if (day && username != undefined) {
                 //     }
@@ -74,8 +72,38 @@ export default function WaiterSchedule(db) {
         let result = await db.one('SELECT id FROM weekdays WHERE weekday=$1', [weekday])
         return result;
     }
+        async function getDays() {
+            const daysQuery = `
+                    SELECT  * FROM schedule
+                    JOIN waiters ON waiters.id = schedule.waiter_id
+                    JOIN weekdays ON weekdays.id = schedule.weekday_id
+                `;
+
+            const results = await db.any(daysQuery);
+    console.log(results);
+            const hold = {
+                'Monday': { waiters: [], status: '' },
+                'Tuesday': { waiters: [], status: '' },
+                'Wednesday': { waiters: [], status: '' },
+                'Thursday': { waiters: [], status: '' },
+                'Friday': { waiters: [], status: '' },
+                'Saturday': { waiters: [], status: '' },
+                'Sunday': { waiters: [], status: '' },
+            };
+
+            for (const row of results) {
+                const { weekday, username } = row;
+    console.log(username);
+                if (hold[weekday]) {
+                    hold[weekday].waiters.push(username);
+                }
+            }
+            return hold;
+
+        }
 
     // async function getDays() {
+
     //     let results, getChecked;
     //     let daysofweek = Object.keys(hold)
     //     // console.log(daysofweek);
@@ -97,9 +125,16 @@ export default function WaiterSchedule(db) {
     //     return hold;
     // }
     async function getWaiterId(username) {
-        let result = await db.one('SELECT id FROM waiters WHERE username = $1', [username])
-        return result;
+        const result = await db.oneOrNone('SELECT id FROM waiters WHERE username = $1', [username]);
+        if (result) {
+            return result.id;
+        }
+        else {
+            // Handle the case where the username is not found
+            return '';
+        }
     }
+
     function getStatusColor(waitersCount) {
         if (waitersCount === 0) {
             return 'rose'; // Set to 'rose' when no waiters
@@ -126,27 +161,28 @@ export default function WaiterSchedule(db) {
         return user_name;
     }
 
-    // async function getAllUsers() {
-    //     return await db.any('SELECT DISTINCT username FROM waiters')
-    // }
+    async function getAllUsers() {
+        let result = await db.any('SELECT DISTINCT username FROM waiters')
+        return result.username;
+    }
 
     function errors() {
         return error_message
     }
 
-    async function getStatus() {
+    function getStatus() {
         // let color_result = await db.one('SELECT color FROM status WHERE')
         return status;
     }
     return {
         valid_waiterName,
-        // getDays,
+         getDays,
         getUser,
         getStatusColor,
         days,
         getWeekDays,
-        // getAllUsers,
-        isExisting,
+        getAllUsers,
+        //   isExisting,
         errors,
         getWeekDayId,
         getStatus,

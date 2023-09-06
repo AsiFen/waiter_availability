@@ -39,12 +39,14 @@ app.use(express.static('public'))
 
 
 app.get('/', async (req, res) => {
-    let getDays = await waiterSchedule.getWeekDays();
+    let getDays = await waiterSchedule.getDays();
+    console.log(getDays);
+    let x = await waiterSchedule.getWeekDays();
+    // console.log(x);
     let error_message = req.flash('errors')[0];
     req.flash('status', waiterSchedule.getStatus())
     let status_color = req.flash('status')[0];
 
-    console.log(getDays);
     res.render('index', {
         status: status_color,
         days: getDays,
@@ -56,6 +58,7 @@ app.post('/waiters', async (req, res) => {
     let username = req.body.username;
     waiterSchedule.valid_waiterName(username)
     await waiterSchedule.setWaiter(username);
+   await waiterSchedule.getWaiterId(username)
     res.redirect('/waiter/' + username)
 
 })
@@ -71,7 +74,6 @@ app.post('/waiter/:username', async (req, res) => {
     let username = waiterSchedule.getUser();
     let isValid = waiterSchedule.valid_waiterName(username)
     let checks = req.body.checks;
-    console.log(checks);
     await waiterSchedule.days(checks, username)
 
     req.flash('errors', waiterSchedule.errors());
