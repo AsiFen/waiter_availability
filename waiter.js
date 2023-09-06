@@ -42,7 +42,7 @@ export default function WaiterSchedule(db) {
         if (daysLength === 3) {
 
             let waiter_id = await getWaiterId(username);
-// console.log(waiter_id);
+            // console.log(waiter_id);
             for (let i = 0; i < daysLength; i++) {
                 const day = selectedDays[i];
 
@@ -72,35 +72,37 @@ export default function WaiterSchedule(db) {
         let result = await db.one('SELECT id FROM weekdays WHERE weekday=$1', [weekday])
         return result;
     }
-        async function getDays() {
-            const daysQuery = `
+    async function getDays() {
+        const daysQuery = `
                     SELECT  * FROM schedule
                     JOIN waiters ON waiters.id = schedule.waiter_id
                     JOIN weekdays ON weekdays.id = schedule.weekday_id
                 `;
 
-            const results = await db.any(daysQuery);
-    console.log(results);
-            const hold = {
-                'Monday': { waiters: [], status: '' },
-                'Tuesday': { waiters: [], status: '' },
-                'Wednesday': { waiters: [], status: '' },
-                'Thursday': { waiters: [], status: '' },
-                'Friday': { waiters: [], status: '' },
-                'Saturday': { waiters: [], status: '' },
-                'Sunday': { waiters: [], status: '' },
-            };
+        const results = await db.any(daysQuery);
+        console.log(results);
+        const hold = {
+            'Monday': { waiters: [], status: '' },
+            'Tuesday': { waiters: [], status: '' },
+            'Wednesday': { waiters: [], status: '' },
+            'Thursday': { waiters: [], status: '' },
+            'Friday': { waiters: [], status: '' },
+            'Saturday': { waiters: [], status: '' },
+            'Sunday': { waiters: [], status: '' },
+        };
 
-            for (const row of results) {
-                const { weekday, username } = row;
-    console.log(username);
-                if (hold[weekday]) {
-                    hold[weekday].waiters.push(username);
-                }
+        for (const row of results) {
+            const { weekday, username } = row;
+            console.log(username);
+            if (hold[weekday]) {
+                hold[weekday].waiters.push(username);
+                hold[weekday].status = getStatusColor(hold[weekday].waiters.length); // Set status based on waiters count
+
             }
-            return hold;
-
         }
+        return hold;
+
+    }
 
     // async function getDays() {
 
@@ -176,7 +178,7 @@ export default function WaiterSchedule(db) {
     }
     return {
         valid_waiterName,
-         getDays,
+        getDays,
         getUser,
         getStatusColor,
         days,
