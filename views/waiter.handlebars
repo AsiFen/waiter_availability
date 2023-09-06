@@ -3,7 +3,21 @@
         <h1>Add Your Shift</h1>
     </div>
 
-    
+       <div class="error-messages text-center">
+        <span class="border border-red-600 rounded-full text-red-500 bg-rose-300">
+            {{error_messages}}
+        </span>
+    </div>
+
+    <div class="days mt-6 text-center">
+        <form action="/waiters" method="post">
+            <div>
+                <label for="name">Enter name:<input type="text" value="" class="bg-blue-100" name="username"></label>
+                <button type="submit" class="border border-solid bg-blue-300 py-2 rounded">Enter</button>
+            </div>
+        </form>
+
+
     <div class="selection">
         <form action="/waiter/{{username}}" method="post">
             <fieldset class="border border-solid border-gray-500 p-5">
