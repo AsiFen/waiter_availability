@@ -1,37 +1,72 @@
 <div class="waiter_container">
-    <div class="heading">
-        <h1>Add Your Shift</h1>
+    <div class="heading text-center">
+        <h1 class="text-neutral-850 font-bold"> Add & update Shift</h1>
     </div>
 
-    <div class="error-messages text-center">
-        <span class="border border-red-600 rounded-full text-red-500 bg-rose-300">
-            {{error_messages}}
-        </span>
+    {{#if error_messages}}
+    <div class="error-msg">
+        <i class="fa fa-times-circle"></i>
+        {{error_messages}}
     </div>
+    <script>
+        // Clear the error message after 3 seconds
+        setTimeout(function () {
+            document.querySelector('.error-message').style.display = 'none';
+        }, 3000);
+    </script>
+    {{/if}}
+
+
 
     <div class="days mt-6 text-center">
         <form action="/waiters" method="post">
             <div>
-                <label for="name">Enter name:<input type="text" value="" class="bg-blue-100" name="username"></label>
-                <button type="submit" class="border border-solid bg-blue-300 py-2 rounded">Enter</button>
+                <label for="name">Enter name:<input type="text" value="" class="bg-neutral-100" name="username"></label>
+                <button type="submit" class="border border-solid bg-neutral-300 py-2 rounded">Enter</button>
             </div>
         </form>
 
         <div class="selection">
             <form action="/waiter/{{username}}" method="post">
+                <p class="text-xl text-neutral-900 underline">{{username}}'s Roster</p>
                 <fieldset class="border border-solid border-gray-500 p-5">
-                    <legend>Choose 3 this:</legend>
+                    <legend>Select 3 days:</legend>
                     <!-- Loop through the days of the week and their properties -->
                     {{#each schedule}}
-                        <div>
-                            <p>{{username}}</p>
-                            <input type="checkbox" id="{{this.weekday}}" value="{{this.weekday}}" name="checks" {{#if this.checked}} checked {{/if}} />
-                            <label for="{{this.weekday}}">{{this.weekday}}</label>
-                        </div>
+                    <div>
+                        <input type="checkbox" id="{{this.weekday}}" value="{{this.weekday}}" name="checks" {{#if
+                            this.checked}} checked {{/if}} />
+                        <label for="{{this.weekday}}">{{this.weekday}}</label>
+                    </div>
                     {{/each}}
                 </fieldset>
-                <button type="submit">done</button>
+                <button type="submit"
+                    class="inline-block mt-4 rounded bg-neutral-900 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]">
+                    done</button>
             </form>
         </div>
     </div>
 </div>
+
+
+{{!-- <div class="x">
+    <div class="info-msg">
+        <i class="fa fa-info-circle"></i>
+        This is an info message.
+    </div>
+
+    <div class="success-msg">
+        <i class="fa fa-check"></i>
+        This is a success message.
+    </div>
+
+    <div class="warning-msg">
+        <i class="fa fa-warning"></i>
+        This is a warning message.
+    </div>
+
+    <div class="error-msg">
+        <i class="fa fa-times-circle"></i>
+        This is a error message.
+    </div>
+</div> --}}

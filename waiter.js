@@ -23,7 +23,10 @@ export default function WaiterSchedule(db) {
         }
     }
 
-    async function days(selectedDays, username) {
+    async function days(selected, username) {
+        let selectedDays = []
+        selectedDays.push(selected)
+        console.log(selectedDays);
         let daysLength = selectedDays.length;
 
         if (valid_waiterName(username)) {
@@ -101,12 +104,41 @@ export default function WaiterSchedule(db) {
                 selectedDays[username] = [];
             }
 
-            if (row.id) {
+            if (row.id && !selectedDays[username].includes(weekday)) {
                 selectedDays[username].push(weekday);
             }
         });
 
         return selectedDays;
+    }
+
+    async function daysToDelete(dayList) {
+        if (!Array.isArray(dayList) || dayList.length === 0) {
+            throw new Error('Invalid input: dayList should be a non-empty array of days.');
+        }
+
+        // Construct a comma-separated list of quoted days to be deleted
+        const daysToDelete = dayList.map(day => `'${day}'`).join(', ');
+
+        // Use a SQL DELETE statement to remove the specified days from the "waiter" table
+        const deleteQuery = `
+            DELETE FROM waiters 
+            WHERE id IN (
+                SELECT DISTINCT waiters.id 
+                FROM waiters
+                JOIN schedule ON waiters.id = schedule.waiter_id
+                JOIN weekdays ON schedule.weekday_id = weekdays.id
+                WHERE weekdays.weekday IN (${daysToDelete})
+            )
+        `;
+
+        try {
+            await db.none(deleteQuery);
+            console.log(`Deleted ${dayList.length} days from the "waiter" table.`);
+        } catch (error) {
+            console.error(`Error deleting days from the "waiter" table: ${error.message}`);
+            throw error;
+        }
     }
 
     async function getWaiterId(username) {
@@ -162,7 +194,7 @@ export default function WaiterSchedule(db) {
     }
 
     return {
-
+        daysToDelete,
         getSelectedDaysForUser,
         valid_waiterName,
         getDays,

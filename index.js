@@ -40,17 +40,15 @@ app.use(express.static('public'))
 
 app.get('/', async (req, res) => {
     let getDays = await waiterSchedule.getDays();
-    console.log(getDays);
+    // console.log(getDays);
 
-    let error_message = req.flash('errors')[0];
     req.flash('status', waiterSchedule.getStatus())
     let status_color = req.flash('status')[0];
 
     res.render('index', {
         status: status_color,
-        days: getDays,
-        error_messages: error_message
-    })
+        days: getDays
+        })
 })
 
 app.post('/waiters', async (req, res) => {
@@ -64,9 +62,10 @@ app.get('/waiter/:username', async (req, res) => {
     const username = req.params.username;
     let getDays = await waiterSchedule.getSelectedDaysForUser(username);
     const daysofweek = await waiterSchedule.getWeekDays();
+    let error_message = req.flash('errors')[0];
 
     let userLIst = getDays[username]
-    console.log(userLIst);
+    // console.log(userLIst);
     if (userLIst != undefined) {
         for (let day in daysofweek) {
             daysofweek[day].checked = false;
@@ -81,7 +80,9 @@ app.get('/waiter/:username', async (req, res) => {
     res.render('waiter', {
         username,
         daysofweek,
-        schedule: daysofweek // Pass the modified daysofweek object as 'schedule'
+        schedule: daysofweek, // Pass the modified daysofweek object as 'schedule'
+        error_messages: error_message
+
     });
 });
 
@@ -95,13 +96,36 @@ app.post('/waiter/:username', async (req, res) => {
     console.log(req.params.username);
     let username = req.params.username;
     let checks = req.body.checks;
+    let getDays = await waiterSchedule.getSelectedDaysForUser(username);
+    let userList = getDays[username]
+
+    if (userList) {
+        // for (const checkedDay of checks) {
+        //     for (const user_day of userList) {
+        //         if (user_day == checkedDay) {
+        //             // updatedDays.push(checkedDay)
+        //             console.log('match' + user_day);
+        //         }
+        //         else {
+        //             console.log("new day added" + checkedDay);
+        //             // toBeDeleted.push(checkedDay)
+
+        //         }
+        //     }
+        // }
+         await waiterSchedule.daysToDelete(userList)
+    }
+    else {
+        // updatedDays = checks;
+    }
+    console.log(checks);
     await waiterSchedule.days(checks, username)
 
     req.flash('errors', waiterSchedule.errors());
 
     // res.redirect('/')
 
-    res.redirect('/waiter/' + username)
+     res.redirect('/waiter/' + username)
 })
 
 //process the enviroment the port is running on
