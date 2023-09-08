@@ -3,7 +3,7 @@
         <h1>Add Your Shift</h1>
     </div>
 
-       <div class="error-messages text-center">
+    <div class="error-messages text-center">
         <span class="border border-red-600 rounded-full text-red-500 bg-rose-300">
             {{error_messages}}
         </span>
@@ -17,23 +17,21 @@
             </div>
         </form>
 
-
-    <div class="selection">
-        <form action="/waiter/{{username}}" method="post">
-            <fieldset class="border border-solid border-gray-500 p-5">
-                <legend>Choose 3 this:</legend>
-                <!-- Loop through the thiss of the week and their properties -->
-                {{#each schedule}}
-                {{#each this}}
-                <div>
-                    <p>{{username}}</p>
-                    <input type="checkbox" id="{{@key}}" value="{{@key}}" name="checks" {{#if value}} checked {{/if}} />
-                    <label for="{{@key}}">{{@key}}</label>
-                </div>
-                {{/each}}
-                {{/each}}
-            </fieldset>
-            <button type="submit">done</button>
-        </form>
+        <div class="selection">
+            <form action="/waiter/{{username}}" method="post">
+                <fieldset class="border border-solid border-gray-500 p-5">
+                    <legend>Choose 3 this:</legend>
+                    <!-- Loop through the days of the week and their properties -->
+                    {{#each schedule}}
+                        <div>
+                            <p>{{username}}</p>
+                            <input type="checkbox" id="{{this.weekday}}" value="{{this.weekday}}" name="checks" {{#if this.checked}} checked {{/if}} />
+                            <label for="{{this.weekday}}">{{this.weekday}}</label>
+                        </div>
+                    {{/each}}
+                </fieldset>
+                <button type="submit">done</button>
+            </form>
+        </div>
     </div>
 </div>

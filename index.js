@@ -40,7 +40,8 @@ app.use(express.static('public'))
 
 app.get('/', async (req, res) => {
     let getDays = await waiterSchedule.getDays();
-    // console.log(getDays);
+    console.log(getDays);
+
     let error_message = req.flash('errors')[0];
     req.flash('status', waiterSchedule.getStatus())
     let status_color = req.flash('status')[0];
@@ -54,29 +55,45 @@ app.get('/', async (req, res) => {
 
 app.post('/waiters', async (req, res) => {
     let username = req.body.username;
-    waiterSchedule.valid_waiterName(username)
-    await waiterSchedule.setWaiter(username);
-    await waiterSchedule.getWaiterId(username)
+    // await waiterSchedule.setWaiter(username);
     res.redirect('/waiter/' + username)
 
 })
+
 app.get('/waiter/:username', async (req, res) => {
     const username = req.params.username;
+    let getDays = await waiterSchedule.getSelectedDaysForUser(username);
     const daysofweek = await waiterSchedule.getWeekDays();
-    let schedule = waiterSchedule.checked(username);
-    // const isSelected = await waiterSchedule.getWeekDays(waiterSchedule.getSelectedDays());
-console.log(schedule);
+
+    let userLIst = getDays[username]
+    console.log(userLIst);
+    if (userLIst != undefined) {
+        for (let day in daysofweek) {
+            daysofweek[day].checked = false;
+            // console.log(day);
+            for (let userDay of userLIst) {
+                if (daysofweek[day].weekday == userDay) {
+                    daysofweek[day].checked = true;
+                }
+            }
+        }
+    }
     res.render('waiter', {
         username,
         daysofweek,
-        schedule
-        // isSelected, // Pass the checkbox state to the template
+        schedule: daysofweek // Pass the modified daysofweek object as 'schedule'
     });
 });
 
+
+app.get('/waiter/', async (req, res) => {
+    res.render('waiter');
+});
+
+
 app.post('/waiter/:username', async (req, res) => {
-    let username = waiterSchedule.getUser();
-    let isValid = waiterSchedule.valid_waiterName(username)
+    console.log(req.params.username);
+    let username = req.params.username;
     let checks = req.body.checks;
     await waiterSchedule.days(checks, username)
 
