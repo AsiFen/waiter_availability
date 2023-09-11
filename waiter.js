@@ -25,8 +25,14 @@ export default function WaiterSchedule(db) {
 
     async function days(selected, username) {
         let selectedDays = []
-        selectedDays.push(selected)
-        console.log(selectedDays);
+        if ((!Array.isArray(selected))) { 
+            selectedDays.push(selected)
+            error_message = 'Select 3 days exactly!!'
+        } else {
+            selectedDays = selected
+            console.log(selectedDays);
+        }
+
         let daysLength = selectedDays.length;
 
         if (valid_waiterName(username)) {

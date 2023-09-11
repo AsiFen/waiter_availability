@@ -1,24 +1,22 @@
-<div class="waiter_container">
-    <div class="heading text-center">
-        <h1 class="text-neutral-850 font-bold"> Add & update Shift</h1>
-    </div>
-
-    {{#if error_messages}}
-    <div class="error-msg">
-        <i class="fa fa-times-circle"></i>
-        {{error_messages}}
-    </div>
-    <script>
-        // Clear the error message after 3 seconds
-        setTimeout(function () {
-            document.querySelector('.error-message').style.display = 'none';
-        }, 3000);
-    </script>
-    {{/if}}
-
-
-
+<div class="waiter_container flex">
     <div class="days mt-6 text-center">
+        <span class="heading text-center text-neutral-850 font-bold"> Add & update Shift</span>
+
+        {{#if error_messages}}
+        <div class="error-msg mb-4">
+            <i class="fa fa-times-circle"></i>
+            {{error_messages}}
+        </div>
+        <script>
+            // Clear the error message after 3 seconds
+            setTimeout(function () {
+                document.querySelector('.error-message').style.display = 'none';
+            }, 3000);
+        </script>
+        {{/if}}
+
+
+
         <form action="/waiters" method="post">
             <div>
                 <label for="name">Enter name:<input type="text" value="" class="bg-neutral-100" name="username"></label>
@@ -28,7 +26,7 @@
 
         <div class="selection">
             <form action="/waiter/{{username}}" method="post">
-                <p class="text-xl text-neutral-900 underline">{{username}}'s Roster</p>
+                <p class="text-xl text-neutral-900 underline mt-4 mb-4 ">{{username}}'s Roster</p>
                 <fieldset class="border border-solid border-gray-500 p-5">
                     <legend>Select 3 days:</legend>
                     <!-- Loop through the days of the week and their properties -->

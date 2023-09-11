@@ -100,32 +100,17 @@ app.post('/waiter/:username', async (req, res) => {
     let userList = getDays[username]
 
     if (userList) {
-        // for (const checkedDay of checks) {
-        //     for (const user_day of userList) {
-        //         if (user_day == checkedDay) {
-        //             // updatedDays.push(checkedDay)
-        //             console.log('match' + user_day);
-        //         }
-        //         else {
-        //             console.log("new day added" + checkedDay);
-        //             // toBeDeleted.push(checkedDay)
-
-        //         }
-        //     }
-        // }
          await waiterSchedule.daysToDelete(userList)
     }
     else {
-        // updatedDays = checks;
     }
-    console.log(checks);
     await waiterSchedule.days(checks, username)
 
     req.flash('errors', waiterSchedule.errors());
 
-    // res.redirect('/')
+    res.redirect('/')
 
-     res.redirect('/waiter/' + username)
+    //  res.redirect('/waiter/' + username)
 })
 
 //process the enviroment the port is running on
