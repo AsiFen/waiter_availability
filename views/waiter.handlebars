@@ -1,4 +1,4 @@
-<div class="waiter_container flex">
+<div class="waiter_container flex justify-center">
     <div class="days mt-6 text-center">
         <span class="heading text-center text-neutral-850 font-bold"> Add & update Shift</span>
 
@@ -28,7 +28,7 @@
             <form action="/waiter/{{username}}" method="post">
                 <p class="text-xl text-neutral-900 underline mt-4 mb-4 ">{{username}}'s Roster</p>
                 <fieldset class="border border-solid border-gray-500 p-5">
-                    <legend>Select 3 days:</legend>
+                    <legend>Select 3 days: </legend>
                     <!-- Loop through the days of the week and their properties -->
                     {{#each schedule}}
                     <div>
@@ -46,8 +46,8 @@
     </div>
 </div>
 
-
-{{!-- <div class="x">
+{{!-- 
+<div class="x">
     <div class="info-msg">
         <i class="fa fa-info-circle"></i>
         This is an info message.
