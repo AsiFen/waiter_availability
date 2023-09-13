@@ -11,11 +11,13 @@ import session from 'express-session';
 
 //conection to the database using pg-promise and dotevn
 import db from './db/db_connect.js'
+import WaiterDB from './db/db_functions.js';
 //import logic function 
-import WaiterSchedule from './waiter.js';
+import WaiterSchedule from './services/waiter.js';
 
+let waiterDB = WaiterDB(db)
 //instantiate the logic function 
-let waiterSchedule = WaiterSchedule(db);
+let waiterSchedule = WaiterSchedule(waiterDB);
 //instantiate express module
 let app = express();
 
@@ -52,40 +54,29 @@ app.get('/admin', async (req, res) => {
         status: status_color,
         days: getDays,
         reset: resetMessage
-
     })
 })
 
 app.post('/waiters', async (req, res) => {
     let username = req.body.username;
-    // await waiterSchedule.setWaiter(username);
+    await waiterSchedule.valid_waiterName(username);
     res.redirect('/waiter/' + username)
-
 })
 
 app.get('/waiter/:username', async (req, res) => {
     const username = req.params.username;
     let getDays = await waiterSchedule.getSelectedDaysForUser(username);
-    const daysofweek = await waiterSchedule.getWeekDays();
+    const daysofweek = await waiterDB.getWeekDays();
     let error_message = req.flash('errors')[0];
+    // console.log(getDays, 'c');
 
-    let userLIst = getDays[username]
-    if (userLIst != undefined) {
-        for (let day in daysofweek) {
-            daysofweek[day].checked = false;
-            for (let userDay of userLIst) {
-                if (daysofweek[day].weekday == userDay) {
-                    daysofweek[day].checked = true;
-                }
-            }
-        }
-    }
     res.render('waiter', {
         username,
         daysofweek,
-        schedule: daysofweek, // Pass the modified daysofweek object as 'schedule'
+        schedule: daysofweek,
         error_messages: error_message
     });
+
 });
 
 
@@ -99,12 +90,13 @@ app.post('/waiter/:username', async (req, res) => {
     let checks = req.body.checks;
     let getDays = await waiterSchedule.getSelectedDaysForUser(username);
     let userList = getDays[username]
-
+    // console.log(userList);
     if (userList) {
         await waiterSchedule.daysToDelete(userList)
     }
-    else {
-    }
+    const daysofweek = await waiterDB.getWeekDays();
+    await waiterSchedule.keepChecked(getDays, username, daysofweek)
+
     await waiterSchedule.days(checks, username)
 
     req.flash('errors', waiterSchedule.errors());
@@ -112,6 +104,7 @@ app.post('/waiter/:username', async (req, res) => {
     // res.redirect('/')
 
     res.redirect('/waiter/' + username)
+
 })
 
 app.post('/reset', async (req, res) => {
