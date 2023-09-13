@@ -43,14 +43,16 @@ app.get('/', async (req, res) => {
 
 app.get('/admin', async (req, res) => {
     let getDays = await waiterSchedule.getDays();
-    // console.log(getDays);
 
     req.flash('status', waiterSchedule.getStatus())
     let status_color = req.flash('status')[0];
+    let resetMessage = req.flash('reset')[0]
 
     res.render('index', {
         status: status_color,
-        days: getDays
+        days: getDays,
+        reset: resetMessage
+
     })
 })
 
@@ -66,7 +68,6 @@ app.get('/waiter/:username', async (req, res) => {
     let getDays = await waiterSchedule.getSelectedDaysForUser(username);
     const daysofweek = await waiterSchedule.getWeekDays();
     let error_message = req.flash('errors')[0];
-    let resetMessage = req.flash('reset')[0]
 
     let userLIst = getDays[username]
     if (userLIst != undefined) {
@@ -83,9 +84,7 @@ app.get('/waiter/:username', async (req, res) => {
         username,
         daysofweek,
         schedule: daysofweek, // Pass the modified daysofweek object as 'schedule'
-        error_messages: error_message,
-        reset: resetMessage
-
+        error_messages: error_message
     });
 });
 
