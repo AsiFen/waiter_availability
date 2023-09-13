@@ -1,4 +1,4 @@
-<div class="container">
+<div style="width:70%; margin-left:9em" class="container text-center">
     <div class="bg-blue-100 py-2">
         <h1 class="text-center text-4xl bold text-blue-700">Waiter Schedule</h1>
     </div>
@@ -7,22 +7,29 @@
         <p class="mt-6">Days when waiters are available</p>
     </div>
 
- 
-        {{#each days}}
-        <div
-            class="flex daysofweek mr-2 border border-neutral-700 border-solid py-1 {{#if this.status}}bg-{{this.status}}-500{{/if}}">
-            <span class="text-xl bold">{{@key}}</span>
-            <ol class="flex ml-6">
-                {{#each this.waiters}} <!-- Access the array of waiters for this day -->
-                <a href="/waiter/{{this}}">
-                    <li class="py-2 ml-4 mr-4 justify-center">{{this}}</li>
-                </a>
-                {{/each}}
-            </ol>
-        </div>
-        {{/each}}
-    </div>
 
-   
+    {{#each days}}
+    <div
+        class="flex daysofweek mr-2 border border-neutral-700 border-solid py-1 {{#if this.status}}bg-{{this.status}}-500{{/if}}">
+        <span class="text-xl bold border border-neutral-350 w-40">{{@key}}</span>
+        <ol class="flex ml-6 list-decimal">
+            {{#each this.waiters}} <!-- Access the array of waiters for this day -->
+            <a href="/waiter/{{this}}">
+                <li class="py-2 ml-4 mr-4 justify-center">{{this}}</li>
+            </a>
+            {{/each}}
+        </ol>
+    </div>
+    {{/each}}
+</div>
+
+
+<form action="/reset" method="post">
+    <button type="submit" onclick="return confirm('Are you sure you want to reset?')"
+        class=" inline-block mt-4 rounded bg-blue-400 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normaltext-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-nonefocus:ring-0 active:bg-primary-700active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)]dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]">
+        reset
+        </button>
+</form>
+
 
 </div>

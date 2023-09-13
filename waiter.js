@@ -25,12 +25,11 @@ export default function WaiterSchedule(db) {
 
     async function days(selected, username) {
         let selectedDays = []
-        if ((!Array.isArray(selected))) { 
+        if ((!Array.isArray(selected))) {
             selectedDays.push(selected)
             error_message = 'Select 3 days exactly!!'
         } else {
             selectedDays = selected
-            console.log(selectedDays);
         }
 
         let daysLength = selectedDays.length;
@@ -136,16 +135,7 @@ export default function WaiterSchedule(db) {
                 JOIN weekdays ON schedule.weekday_id = weekdays.id
                 WHERE weekdays.weekday IN (${daysToDelete})
             )
-        `;
-
-        try {
-            await db.none(deleteQuery);
-            console.log(`Deleted ${dayList.length} days from the "waiter" table.`);
-        } catch (error) {
-            console.error(`Error deleting days from the "waiter" table: ${error.message}`);
-            throw error;
-        }
-    }
+        `;}
 
     async function getWaiterId(username) {
         const result = await db.oneOrNone('SELECT id FROM waiters WHERE username = $1', [username]);
@@ -199,7 +189,12 @@ export default function WaiterSchedule(db) {
         return status;
     }
 
+    async function reset() {
+        await db.none('TRUNCATE TABLE waiters')
+    }
+
     return {
+        reset,
         daysToDelete,
         getSelectedDaysForUser,
         valid_waiterName,

@@ -37,8 +37,11 @@ app.use(bodyParser.json())
 //built-in static middleware from ExpressJS to use static resources such as my CSS
 app.use(express.static('public'))
 
-
 app.get('/', async (req, res) => {
+    res.redirect('/waiter')
+})
+
+app.get('/admin', async (req, res) => {
     let getDays = await waiterSchedule.getDays();
     // console.log(getDays);
 
@@ -48,7 +51,7 @@ app.get('/', async (req, res) => {
     res.render('index', {
         status: status_color,
         days: getDays
-        })
+    })
 })
 
 app.post('/waiters', async (req, res) => {
@@ -63,13 +66,12 @@ app.get('/waiter/:username', async (req, res) => {
     let getDays = await waiterSchedule.getSelectedDaysForUser(username);
     const daysofweek = await waiterSchedule.getWeekDays();
     let error_message = req.flash('errors')[0];
+    let resetMessage = req.flash('reset')[0]
 
     let userLIst = getDays[username]
-    // console.log(userLIst);
     if (userLIst != undefined) {
         for (let day in daysofweek) {
             daysofweek[day].checked = false;
-            // console.log(day);
             for (let userDay of userLIst) {
                 if (daysofweek[day].weekday == userDay) {
                     daysofweek[day].checked = true;
@@ -81,7 +83,8 @@ app.get('/waiter/:username', async (req, res) => {
         username,
         daysofweek,
         schedule: daysofweek, // Pass the modified daysofweek object as 'schedule'
-        error_messages: error_message
+        error_messages: error_message,
+        reset: resetMessage
 
     });
 });
@@ -93,14 +96,13 @@ app.get('/waiter/', async (req, res) => {
 
 
 app.post('/waiter/:username', async (req, res) => {
-    console.log(req.params.username);
     let username = req.params.username;
     let checks = req.body.checks;
     let getDays = await waiterSchedule.getSelectedDaysForUser(username);
     let userList = getDays[username]
 
     if (userList) {
-         await waiterSchedule.daysToDelete(userList)
+        await waiterSchedule.daysToDelete(userList)
     }
     else {
     }
@@ -108,10 +110,17 @@ app.post('/waiter/:username', async (req, res) => {
 
     req.flash('errors', waiterSchedule.errors());
 
-    res.redirect('/')
+    // res.redirect('/')
 
-    //  res.redirect('/waiter/' + username)
+    res.redirect('/waiter/' + username)
 })
+
+app.post('/reset', async (req, res) => {
+    req.flash('reset', 'Successfully reset!')
+    await waiterSchedule.reset();
+    res.redirect('/admin')
+})
+
 
 //process the enviroment the port is running on
 let PORT = process.env.PORT || 1230;

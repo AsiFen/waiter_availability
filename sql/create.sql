@@ -17,9 +17,4 @@ CREATE TABLE schedule (
    FOREIGN KEY(weekday_id) REFERENCES weekdays(id)
 )
 ;
--- CREATE TABLE user_selections (
---     id SERIAL PRIMARY KEY,
---     username VARCHAR(255) NOT NULL,
---     day VARCHAR(255) NOT NULL,
---     selected BOOLEAN NOT NULL
--- );
+
