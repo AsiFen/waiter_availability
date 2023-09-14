@@ -60,7 +60,7 @@ app.get('/admin', async (req, res) => {
 app.post('/waiters', async (req, res) => {
     let username = req.body.username;
     await waiterSchedule.valid_waiterName(username);
-    // res.redirect('/waiter/' + username)
+     res.redirect('/waiter/' + username)
 })
 
 app.get('/waiter/:username', async (req, res) => {
@@ -68,8 +68,7 @@ app.get('/waiter/:username', async (req, res) => {
     let getDays = await waiterSchedule.getSelectedDaysForUser(username);
     const daysofweek = await waiterDB.getWeekDays();
     let error_message = req.flash('errors')[0];
-    // console.log(getDays, 'c');
-    // const daysofweek = await waiterDB.getWeekDays();
+    console.log(error_message, 'c');
     await waiterSchedule.keepChecked(getDays, username, daysofweek)
 
     res.render('waiter', {
@@ -80,7 +79,6 @@ app.get('/waiter/:username', async (req, res) => {
     });
 
 });
-
 
 app.get('/waiter/', async (req, res) => {
     res.render('waiter');
@@ -97,7 +95,6 @@ app.post('/waiter/:username', async (req, res) => {
         await waiterSchedule.daysToDelete(userList)
     }
 
-
     await waiterSchedule.days(checks, username)
 
     req.flash('errors', waiterSchedule.errors());
@@ -113,7 +110,6 @@ app.post('/reset', async (req, res) => {
     await waiterSchedule.reset();
     res.redirect('/admin')
 })
-
 
 //process the enviroment the port is running on
 let PORT = process.env.PORT || 1230;

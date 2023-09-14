@@ -1,7 +1,7 @@
 export default function WaiterSchedule(WaiterDB) {
     let status;
-    const valid_username = '';
-    let error_message = '';
+    // const valid_username = '';
+    let error_message;
 
     async function valid_waiterName(username) {
         let pattern = /^[a-zA-Z]+$/;
@@ -31,7 +31,7 @@ export default function WaiterSchedule(WaiterDB) {
         let isExisting = await WaiterDB.isExisting(username)
         // console.log(isExisting);
         if (isExisting) {
-            
+
             if (daysLength === 3) {
 
                 let waiter_id = await WaiterDB.getWaiterId(username);
@@ -89,7 +89,7 @@ export default function WaiterSchedule(WaiterDB) {
             }
         }
     }
-    
+
     async function getSelectedDaysForUser(user_id) {
         let results = await WaiterDB.selectedDaysQuery(user_id);
         // console.log(results,'xxx');
@@ -141,7 +141,7 @@ export default function WaiterSchedule(WaiterDB) {
     }
 
     function errors() {
-        return error_message
+        return (error_message ? error_message : '')
     }
 
     function getStatus() {
