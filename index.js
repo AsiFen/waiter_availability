@@ -1,4 +1,3 @@
-
 //import express  framework
 import express from 'express';
 //import the handlebars engine 
@@ -15,9 +14,17 @@ import WaiterDB from './db/db_functions.js';
 //import logic function 
 import WaiterSchedule from './services/waiter.js';
 
+//importing my routes
+import AdminSchedule from './routes/admin_route.js';
+import WaiterRoute from './routes/waiter_route.js';
+
 let waiterDB = WaiterDB(db)
 //instantiate the logic function 
 let waiterSchedule = WaiterSchedule(waiterDB);
+//instantiate my routes
+let admin_route = AdminSchedule(waiterSchedule)
+let waiterRoute = WaiterRoute(waiterSchedule, waiterDB)
+
 //instantiate express module
 let app = express();
 
@@ -43,73 +50,19 @@ app.get('/', async (req, res) => {
     res.redirect('/waiter')
 })
 
-app.get('/admin', async (req, res) => {
-    let getDays = await waiterSchedule.getDays();
-
-    req.flash('status', waiterSchedule.getStatus())
-    let status_color = req.flash('status')[0];
-    let resetMessage = req.flash('reset')[0]
-
-    res.render('index', {
-        status: status_color,
-        days: getDays,
-        reset: resetMessage
-    })
-})
-
-app.post('/waiters', async (req, res) => {
-    let username = req.body.username;
-    await waiterSchedule.valid_waiterName(username);
-     res.redirect('/waiter/' + username)
-})
-
-app.get('/waiter/:username', async (req, res) => {
-    const username = req.params.username;
-    let getDays = await waiterSchedule.getSelectedDaysForUser(username);
-    const daysofweek = await waiterDB.getWeekDays();
-    let error_message = req.flash('errors')[0];
-    console.log(error_message, 'c');
-    await waiterSchedule.keepChecked(getDays, username, daysofweek)
-
-    res.render('waiter', {
-        username,
-        daysofweek,
-        schedule: daysofweek,
-        error_messages: error_message
-    });
-
-});
+app.get('/admin', admin_route.showSchedule)
 
 app.get('/waiter/', async (req, res) => {
     res.render('waiter');
 });
 
+app.post('/waiters', waiterRoute.getWaiter)
 
-app.post('/waiter/:username', async (req, res) => {
-    let username = req.params.username;
-    let checks = req.body.checks;
-    let getDays = await waiterSchedule.getSelectedDaysForUser(username);
-    let userList = getDays[username]
-    // console.log(userList);
-    if (userList) {
-        await waiterSchedule.daysToDelete(userList)
-    }
+app.get('/waiter/:username', waiterRoute.keepChecked);
 
-    await waiterSchedule.days(checks, username)
+app.post('/waiter/:username',waiterRoute.selectDays)
 
-    req.flash('errors', waiterSchedule.errors());
-
-    // res.redirect('/')
-
-    res.redirect('/waiter/' + username)
-
-})
-
-app.post('/reset', async (req, res) => {
-    req.flash('reset', 'Successfully reset!')
-    await waiterSchedule.reset();
-    res.redirect('/admin')
-})
+app.post('/reset', admin_route.clear)
 
 //process the enviroment the port is running on
 let PORT = process.env.PORT || 1230;
