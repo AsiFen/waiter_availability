@@ -16,6 +16,21 @@
         {{/if}}
 
 
+        {{#if success_message}}
+        <div class="info-msg">
+            <i class="fa fa-info-circle"></i>
+            {{success_message}}
+        </div>
+        {{/if}}
+
+        <script>
+            // Clear the error message after 3 seconds
+            setTimeout(function () {
+                document.querySelector('.info-msg').style.display = 'none';
+            }, 3000);
+        </script>
+
+
         <form action="/waiters" method="post">
             <div>
                 <label for="name">Enter name:<input type="text" value="" class="bg-neutral-100" name="username"></label>
@@ -45,7 +60,7 @@
     </div>
 </div>
 
-{{!-- 
+{{!--
 <div class="x">
     <div class="info-msg">
         <i class="fa fa-info-circle"></i>

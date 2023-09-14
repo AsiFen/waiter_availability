@@ -1,6 +1,6 @@
 export default function WaiterSchedule(WaiterDB) {
     let status;
-    // const valid_username = '';
+    let success;
     let error_message;
 
     async function valid_waiterName(username) {
@@ -12,6 +12,7 @@ export default function WaiterSchedule(WaiterDB) {
                 error_message = 'Username already exists!';
             } else {
                 await WaiterDB.setWaiter(username);
+                success = 'name added successfully!'
             }
         } else {
             error_message = 'Use alphanumeric values!';
@@ -71,12 +72,14 @@ export default function WaiterSchedule(WaiterDB) {
                 hold[weekday].waiters.push(username);
                 hold[weekday].status = getStatusColor(hold[weekday].waiters.length); // Set status based on waiters count
             }
+            success = 'Days added successfully!'
+
         }
+
         return hold;
     }
 
     async function keepChecked(getDays, username, daysofweek) {
-        // console.log(getDays,"a",username,'b',daysofweek,"i");
         let userLIst = getDays[username]
         if (userLIst != undefined) {
             for (let day in daysofweek) {
@@ -87,6 +90,7 @@ export default function WaiterSchedule(WaiterDB) {
                     }
                 }
             }
+            success = 'Update successful!'
         }
     }
 
@@ -148,18 +152,23 @@ export default function WaiterSchedule(WaiterDB) {
         return status;
     }
 
+    function successMessage() {
+        return success
+    }
     function getUser() {
         return user;
     }
 
     return {
         daysToDelete,
+        successMessage,
         getSelectedDaysForUser,
         valid_waiterName,
         getDays,
         getUser,
         getStatusColor,
         days,
+        
         errors,
         getStatus,
         keepChecked

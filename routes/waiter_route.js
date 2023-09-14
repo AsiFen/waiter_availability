@@ -20,7 +20,8 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         await waiterSchedule.days(checks, username)
     
         req.flash('errors', waiterSchedule.errors());
-    
+        req.flash('success', waiterSchedule.successMessage());
+
         res.redirect('/waiter/' + username)
     }
 
@@ -29,13 +30,16 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         let getDays = await waiterSchedule.getSelectedDaysForUser(username);
         const daysofweek = await waiterDB.getWeekDays();
         let error_message = req.flash('errors')[0];
+        let success_message = req.flash('success')[0];
+
         await waiterSchedule.keepChecked(getDays, username, daysofweek)
     
         res.render('waiter', {
             username,
             daysofweek,
             schedule: daysofweek,
-            error_messages: error_message
+            error_messages: error_message,
+            success_message
         });
     }
 
