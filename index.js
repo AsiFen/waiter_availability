@@ -60,7 +60,7 @@ app.get('/admin', async (req, res) => {
 app.post('/waiters', async (req, res) => {
     let username = req.body.username;
     await waiterSchedule.valid_waiterName(username);
-    res.redirect('/waiter/' + username)
+    // res.redirect('/waiter/' + username)
 })
 
 app.get('/waiter/:username', async (req, res) => {
@@ -69,6 +69,8 @@ app.get('/waiter/:username', async (req, res) => {
     const daysofweek = await waiterDB.getWeekDays();
     let error_message = req.flash('errors')[0];
     // console.log(getDays, 'c');
+    // const daysofweek = await waiterDB.getWeekDays();
+    await waiterSchedule.keepChecked(getDays, username, daysofweek)
 
     res.render('waiter', {
         username,
@@ -94,8 +96,7 @@ app.post('/waiter/:username', async (req, res) => {
     if (userList) {
         await waiterSchedule.daysToDelete(userList)
     }
-    const daysofweek = await waiterDB.getWeekDays();
-    await waiterSchedule.keepChecked(getDays, username, daysofweek)
+
 
     await waiterSchedule.days(checks, username)
 

@@ -75,6 +75,21 @@ export default function WaiterSchedule(WaiterDB) {
         return hold;
     }
 
+    async function keepChecked(getDays, username, daysofweek) {
+        // console.log(getDays,"a",username,'b',daysofweek,"i");
+        let userLIst = getDays[username]
+        if (userLIst != undefined) {
+            for (let day in daysofweek) {
+                daysofweek[day].checked = false;
+                for (let userDay of userLIst) {
+                    if (daysofweek[day].weekday == userDay) {
+                        daysofweek[day].checked = true;
+                    }
+                }
+            }
+        }
+    }
+    
     async function getSelectedDaysForUser(user_id) {
         let results = await WaiterDB.selectedDaysQuery(user_id);
         // console.log(results,'xxx');
@@ -96,10 +111,6 @@ export default function WaiterSchedule(WaiterDB) {
         return selectedDays;
     }
 
-    async function keepChecked(getDays, username, daysofweek) {
-    
-    }
-    
 
     async function daysToDelete(dayList) {
         if (!Array.isArray(dayList) || dayList.length === 0) {

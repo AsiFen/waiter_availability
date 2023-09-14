@@ -38,7 +38,7 @@ export default function WaiterDB(db) {
         }
 
         const results = await db.any(daysQuery + clause);
-        console.log(results);
+        // console.log(results);
         return results;
     }
 
