@@ -73,7 +73,6 @@ export default function WaiterSchedule(WaiterDB) {
                 hold[weekday].status = getStatusColor(hold[weekday].waiters.length); // Set status based on waiters count
             }
             success = 'Days added successfully!'
-
         }
 
         return hold;
@@ -96,7 +95,6 @@ export default function WaiterSchedule(WaiterDB) {
 
     async function getSelectedDaysForUser(user_id) {
         let results = await WaiterDB.selectedDaysQuery(user_id);
-        // console.log(results,'xxx');
         const selectedDays = {};
 
         results.forEach((row) => {
@@ -114,7 +112,6 @@ export default function WaiterSchedule(WaiterDB) {
 
         return selectedDays;
     }
-
 
     async function daysToDelete(dayList) {
         if (!Array.isArray(dayList) || dayList.length === 0) {
@@ -155,9 +152,6 @@ export default function WaiterSchedule(WaiterDB) {
     function successMessage() {
         return success
     }
-    function getUser() {
-        return user;
-    }
 
     return {
         daysToDelete,
@@ -165,10 +159,8 @@ export default function WaiterSchedule(WaiterDB) {
         getSelectedDaysForUser,
         valid_waiterName,
         getDays,
-        getUser,
         getStatusColor,
         days,
-        
         errors,
         getStatus,
         keepChecked

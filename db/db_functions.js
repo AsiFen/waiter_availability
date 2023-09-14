@@ -1,8 +1,8 @@
 export default function WaiterDB(db) {
 
     async function isExisting(username) {
-        const result = await db.oneOrNone('SELECT username FROM waiters WHERE username = $1', [username]);
-        return result !== null;
+        const result = await db.any('SELECT username FROM waiters WHERE username = $1', [username]);
+        return result;
     }
 
     async function getWeekdayId(day) {
