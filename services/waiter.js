@@ -1,18 +1,18 @@
 export default function WaiterSchedule(WaiterDB) {
     let status;
-    let success;
+    let success = '';
     let error_message;
 
     async function valid_waiterName(username) {
-        let pattern = /^[a-zA-Z]+$/;
+        let pattern = /^[A-Za-z]+$/;
 
         if (username.match(pattern) && username !== undefined) {
             let isExisting = await WaiterDB.isExisting(username)
-            if (isExisting) {
-                error_message = 'Username already exists!';
-            } else {
+            if (!isExisting) {
+                success = 'name added successfully!';
                 await WaiterDB.setWaiter(username);
-                success = 'name added successfully!'
+            } else {
+                error_message = 'Username already exists!';
             }
         } else {
             error_message = 'Use alphanumeric values!';
@@ -23,7 +23,7 @@ export default function WaiterSchedule(WaiterDB) {
         let selectedDays = []
         if ((!Array.isArray(selected))) {
             selectedDays.push(selected)
-            error_message = 'Select 3 days exactly!!'
+            error_message = 'Select 3 days exactly!!';
         } else {
             selectedDays = selected
         }
@@ -72,7 +72,7 @@ export default function WaiterSchedule(WaiterDB) {
                 hold[weekday].waiters.push(username);
                 hold[weekday].status = getStatusColor(hold[weekday].waiters.length); // Set status based on waiters count
             }
-            success = 'Days added successfully!'
+            success = 'Days added successfully!';
         }
 
         return hold;
@@ -89,7 +89,7 @@ export default function WaiterSchedule(WaiterDB) {
                     }
                 }
             }
-            success = 'Update successful!'
+            success = 'Update successful!';
         }
     }
 
@@ -149,13 +149,12 @@ export default function WaiterSchedule(WaiterDB) {
         return status;
     }
 
-    function successMessage() {
-        return success
+ function successMessage() {
+        return (success ? success : false)
     }
 
     return {
         daysToDelete,
-        successMessage,
         getSelectedDaysForUser,
         valid_waiterName,
         getDays,
@@ -163,7 +162,8 @@ export default function WaiterSchedule(WaiterDB) {
         days,
         errors,
         getStatus,
-        keepChecked
+        keepChecked,
+        successMessage
 
     }
 }

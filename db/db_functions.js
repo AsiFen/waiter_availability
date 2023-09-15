@@ -10,7 +10,7 @@ export default function WaiterDB(db) {
         return weekday_id;
     }
     async function createSchedule(waiter_id, weekday_id) {
-        db.none('INSERT INTO schedule (waiter_id, weekday_id) VALUES ($1, $2)', [waiter_id, weekday_id])
+      await db.none('INSERT INTO schedule (waiter_id, weekday_id) VALUES ($1, $2)', [waiter_id, weekday_id])
     }
 
     async function joinQuery() {
@@ -95,14 +95,18 @@ export default function WaiterDB(db) {
     }
 
     async function reset() {
-        await db.none('TRUNCATE TABLE waiters')
+        await db.none('DELETE FROM waiters')
     }
 
     async function setWaiter(user_name) {
         await db.none('INSERT INTO waiters (username) VALUES ($1)', [user_name])
     }
-
+    async function scheduleExists(waiterId) {
+      let result = await db.any("SELECT id FROM schedule WHERE waiter_id = $1", [waiterId]);
+      return (result ? true: false)
+    }
     return {
+        scheduleExists,
         isExisting,
         getWeekdayId,
         createSchedule,
