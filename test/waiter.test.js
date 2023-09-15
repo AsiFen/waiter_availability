@@ -35,7 +35,7 @@ describe('Database Functions', () => {
     const waiterId = await waiterDB.getWaiterId('luzuko');
     const weekdayId = await waiterDB.getWeekdayId('Monday');
     await waiterDB.createSchedule(waiterId, weekdayId.id);
-    let scheduleExists = await waiterDB.scheduleExists(waiterId)
+    let scheduleExists = await waiterDB.scheduleExists(waiterId.id)
     assert.strictEqual(scheduleExists, true);
   });
 
@@ -85,27 +85,12 @@ describe('Database Functions', () => {
     ])
   });
 
-  // it('should perform selectedDaysQuery and return results', async function () {
-  //   const results = await waiterDB.selectedDaysQuery('testwaiter');
-  //   // Add assertions based on your expected results
-  // });
 
-  // it('should delete selected days and associated schedules', async function () {
-  //   await waiterDB.setWaiter('testwaiter');
-  //   const waiterId = await waiterDB.getWaiterId('testwaiter');
-  //   const weekdayId = await waiterDB.getWeekdayId('Monday');
-  //   await waiterDB.createSchedule(waiterId, weekdayId);
-
-  //   await waiterDB.deleteSelectedQuery(['Monday']);
-  //   const scheduleExists = await db.oneOrNone("SELECT * FROM schedule WHERE waiter_id = $1 AND weekday_id = $2", [waiterId, weekdayId]);
-  //   assert.strictEqual(scheduleExists, null);
-  // });
-
-  // it('should get a waiter ID', async function () {
-  //   await waiterDB.setWaiter('testwaiter');
-  //   const waiterId = await waiterDB.getWaiterId('testwaiter');
-  //   assert.strictEqual(waiterId, 1); // Replace with the actual ID
-  // });
+  it('should get a waiter ID', async function () {
+    await waiterDB.setWaiter('testwaiter');
+    const waiterId = await waiterDB.getWaiterId('testwaiter');
+    assert.strictEqual(waiterId, 1); // Replace with the actual ID
+  });
 
   it('should get all week days', async function () {
     const weekdays = await waiterDB.getWeekDays();
