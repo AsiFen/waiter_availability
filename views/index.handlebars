@@ -1,4 +1,5 @@
-<div style="width:70%; margin-left:9em" class="container text-center">
+<div class="text-center">
+
     <div class="bg-blue-100">
         <h1 class="text-center text-4xl bold text-blue-700">Waiter Schedule</h1>
     </div>
@@ -11,27 +12,41 @@
         <i class="fa fa-check"></i>
         {{reset}}
     </div>
-     <script>
-            // Clear the error message after 3 seconds
-            setTimeout(function () {
-                document.querySelector('.error-msg').style.display = 'none';
-            }, 3000);
-        </script>
+    <script>
+        // Clear the error message after 3 seconds
+        setTimeout(function () {
+            document.querySelector('.error-msg').style.display = 'none';
+        }, 3000);
+    </script>
     {{/if}}
+    <div class="row">
 
-    {{#each days}}
-    <div
-        class="flex daysofweek mr-2 border border-neutral-700 border-solid {{#if this.status}}bg-{{this.status}}-500{{/if}}">
-        <span class="text-xl bold border border-neutral-950 w-40">{{@key}}</span>
-        <ol class="flex ml-6 list-decimal">
-            {{#each this.waiters}} <!-- Access the array of waiters for this day -->
-            <a href="/waiter/{{this}}">
-                <li class="py-2 ml-4 mr-4 justify-center">{{this}}</li>
-            </a>
+        <div class="schedule-display col-9">
+
+            {{#each days}}
+            <div
+                class="flex daysofweek mr-2 border border-neutral-700 border-solid {{#if this.status}}bg-{{this.status}}-500{{/if}}">
+                <span class="text-xl bold border border-neutral-950 w-40">{{@key}}</span>
+                <ol class="flex ml-6 list-decimal">
+                    {{#each this.waiters}} <!-- Access the array of waiters for this day -->
+                    <a href="/waiter/{{this}}">
+                        <li class="py-2 ml-4 mr-4 justify-center">{{this}}</li>
+                    </a>
+                    {{/each}}
+                </ol>
+            </div>
             {{/each}}
-        </ol>
+        </div>
+        <div class="col-3 mt-2">
+            <div class="aside">
+                <div class="bg-orange-500 mb-1"><label for="orange">Short of Waiters</label></div>
+                <div class="bg-red-500 mb-1"> <label for="red">Exceeded Number of Waiters</label>
+                </div>
+                <div class="bg-green-500 mb-1"> <label for="red">Enough Number of Waiters</label>
+                </div>
+            </div>
+        </div>
     </div>
-    {{/each}}
 </div>
 
 <form action="/reset" method="post" class="flex justify-center">
@@ -41,4 +56,5 @@
     </button>
 </form>
 
-{{!-- </div> --}}
+
+</div>

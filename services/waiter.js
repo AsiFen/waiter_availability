@@ -56,6 +56,7 @@ export default function WaiterSchedule(WaiterDB) {
 
     async function getDays() {
         let results = await WaiterDB.joinQuery();
+        // console.log(results);
         const hold = {
             'Monday': { waiters: [], status: '' },
             'Tuesday': { waiters: [], status: '' },
@@ -80,7 +81,6 @@ export default function WaiterSchedule(WaiterDB) {
 
     async function keepChecked(getDays, username, daysofweek) {
         let userLIst = getDays[username]
-        console.log(getDays, 'x');
         if (userLIst != undefined) {
             for (let day in daysofweek) {
                 daysofweek[day].checked = false;

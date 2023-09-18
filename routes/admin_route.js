@@ -14,9 +14,9 @@ export default function AdminSchedule(waiterSchedule) {
         })
     }
 
-    async function clear(req, res){
+    async function clear(req, res, waiterDB){
         req.flash('reset', 'Successfully reset!')
-        await waiterSchedule.reset();
+        await waiterDB.reset();
         res.redirect('/admin')
     }
 

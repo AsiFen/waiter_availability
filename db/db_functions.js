@@ -22,9 +22,10 @@ export default function WaiterDB(db) {
                 `;
 
         const results = await db.any(daysQuery);
-
+console.log(results);
         return results;
     }
+    
 
     async function selectedDaysQuery(user_id) {
         const daysQuery = `
