@@ -8,7 +8,7 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         res.redirect('/waiter/' + username)
     }
 
-    async function selectDays(req, res, waiterDB) {
+    async function selectDays(req, res) {
         let username = req.params.username;
         let checks = req.body.checks;
         let getDays = await waiterSchedule.getSelectedDaysForUser(username);

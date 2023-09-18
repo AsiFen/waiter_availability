@@ -80,6 +80,7 @@ export default function WaiterSchedule(WaiterDB) {
 
     async function keepChecked(getDays, username, daysofweek) {
         let userLIst = getDays[username]
+        console.log(getDays, 'x');
         if (userLIst != undefined) {
             for (let day in daysofweek) {
                 daysofweek[day].checked = false;
