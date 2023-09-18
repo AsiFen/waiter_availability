@@ -2,7 +2,7 @@ import assert from 'assert';
 import WaiterDB from '../db/db_functions.js'; // Adjust the path accordingly
 import pgPromise from 'pg-promise';
 
-const connectionString = 'postgresql://asisipho:asisipho123@localhost:5432/users';
+const connectionString = process.env.DATABASE_URL || 'postgresql://asisipho:asisipho123@localhost:5432/users';
 const db = pgPromise()(connectionString);
 const waiterDB = WaiterDB(db);
 
