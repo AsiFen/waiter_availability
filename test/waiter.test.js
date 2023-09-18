@@ -13,7 +13,6 @@ describe('Database Functions', () => {
       await db.none("TRUNCATE TABLE waiters RESTART IDENTITY CASCADE;");
       await db.none("TRUNCATE TABLE schedule RESTART IDENTITY CASCADE;");
     } catch (err) {
-      console.log(err);
       throw err;
     }
   });
@@ -40,13 +39,7 @@ describe('Database Functions', () => {
   });
 
   it('should perform joinQuery and return waiters names and weekdays', async function () {
-    // Insert some test data into the database for testing
 
-    // await waiterDB.setWaiter('Asiphe');
-    // const asipheID = await waiterDB.getWaiterId('Asiphe');
-
-    // await waiterDB.createSchedule(yamisaID, ['Tuesday', 'Wednesday', 'Friday']);
-    // Loop through the selected days 
     await waiterDB.setWaiter('Yamisa');
     const yamisaID = await waiterDB.getWaiterId('Yamisa');
     let yamisaSelectedDays = ['Tuesday', 'Wednesday', 'Friday']
@@ -56,9 +49,8 @@ describe('Database Functions', () => {
       let weekday_id = await waiterDB.getWeekdayId(day)
       await waiterDB.createSchedule(yamisaID, weekday_id.id)
     }
-    // await waiterDB.createSchedule(asipheID, ['Tuesday', 'Saturday', 'Sunday']);
     const results = await waiterDB.joinQuery();
-
+    // console.log(results);
     assert.strictEqual(results.length, 3);
     assert.deepEqual(results, [
       {
@@ -87,9 +79,9 @@ describe('Database Functions', () => {
 
 
   it('should get a waiter ID', async function () {
-    await waiterDB.setWaiter('testwaiter');
-    const waiterId = await waiterDB.getWaiterId('testwaiter');
-    assert.strictEqual(waiterId, 1); // Replace with the actual ID
+    await waiterDB.setWaiter('sisi');
+    const waiterId = await waiterDB.getWaiterId('sisi');
+    assert.strictEqual(waiterId, 1);
   });
 
   it('should get all week days', async function () {
@@ -98,7 +90,7 @@ describe('Database Functions', () => {
   });
 
   it('should reset the waiters table', async function () {
-    await waiterDB.setWaiter('mbuyi');
+    await waiterDB.setWaiter('blair');
     await waiterDB.reset();
     const waitersCount = await db.one("SELECT count(*) FROM waiters");
     assert.deepEqual(waitersCount.count, 0);

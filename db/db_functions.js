@@ -76,7 +76,6 @@ export default function WaiterDB(db) {
 
     async function getWaiterId(username) {
         const result = await db.one('SELECT id FROM waiters WHERE username = $1', [username]);
-        console.log('3', result);
 
         if (result) {
             return result.id;
