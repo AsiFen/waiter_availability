@@ -4,14 +4,16 @@ export default function WaiterSchedule(WaiterDB) {
     let error_message;
 
     async function valid_waiterName(username) {
-        let pattern = /^[A-Za-z]+$/;
+        let pattern = /^[a-zA-Z]+$/;
 
         if (username.match(pattern) && username !== undefined) {
             let isExisting = await WaiterDB.isExisting(username)
-            if (!isExisting) {
-                success = 'name added successfully!';
+            if (isExisting.length == 0) {
+                console.log(username, "userSet");
                 await WaiterDB.setWaiter(username);
+                success = 'name added successfully!'
             } else {
+                console.log('here', isExisting.length);
                 error_message = 'Username already exists!';
             }
         } else {
@@ -36,6 +38,7 @@ export default function WaiterSchedule(WaiterDB) {
             if (daysLength === 3) {
 
                 let waiter_id = await WaiterDB.getWaiterId(username);
+                console.log(waiter_id);
                 // Loop through the selected days and update hold2
                 for (let i = 0; i < daysLength; i++) {
                     const day = selectedDays[i];
@@ -149,7 +152,7 @@ export default function WaiterSchedule(WaiterDB) {
         return status;
     }
 
- function successMessage() {
+    function successMessage() {
         return (success ? success : false)
     }
 

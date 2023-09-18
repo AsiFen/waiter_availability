@@ -22,8 +22,8 @@ let waiterDB = WaiterDB(db)
 //instantiate the logic function 
 let waiterSchedule = WaiterSchedule(waiterDB);
 //instantiate my routes
-let admin_route = AdminSchedule(waiterSchedule)
 let waiterRoute = WaiterRoute(waiterSchedule, waiterDB)
+let admin_route = AdminSchedule(waiterSchedule)
 
 //instantiate express module
 let app = express();
@@ -56,7 +56,7 @@ app.get('/waiter/', async (req, res) => {
     res.render('waiter');
 });
 
-app.post('/waiters', waiterRoute.getWaiter)
+app.post('/waiter', waiterRoute.getWaiter)
 
 app.get('/waiter/:username', waiterRoute.keepChecked);
 

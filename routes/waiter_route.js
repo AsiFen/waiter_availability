@@ -1,5 +1,6 @@
 export default function WaiterRoute(waiterSchedule, waiterDB) {
-    async function getWaiter(req, res) {
+
+    async function getWaiter(req, res, waiterDB) {
         let username = req.body.username;
 
         await waiterSchedule.valid_waiterName(username);
@@ -7,7 +8,7 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         res.redirect('/waiter/' + username)
     }
 
-    async function selectDays(req, res) {
+    async function selectDays(req, res, waiterDB) {
         let username = req.params.username;
         let checks = req.body.checks;
         let getDays = await waiterSchedule.getSelectedDaysForUser(username);
@@ -25,7 +26,7 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         res.redirect('/waiter/' + username)
     }
 
-    async function keepChecked(req, res){
+    async function keepChecked(req, res, waiterDB){
         const username = req.params.username;
         let getDays = await waiterSchedule.getSelectedDaysForUser(username);
         const daysofweek = await waiterDB.getWeekDays();

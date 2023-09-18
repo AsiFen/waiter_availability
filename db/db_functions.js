@@ -10,6 +10,7 @@ export default function WaiterDB(db) {
         return weekday_id;
     }
     async function createSchedule(waiter_id, weekday_id) {
+        // console.log('2', waiter_id);
       await db.none('INSERT INTO schedule (waiter_id, weekday_id) VALUES ($1, $2)', [waiter_id, weekday_id])
     }
 
@@ -74,7 +75,9 @@ export default function WaiterDB(db) {
 
 
     async function getWaiterId(username) {
-        const result = await db.oneOrNone('SELECT id FROM waiters WHERE username = $1', [username]);
+        const result = await db.one('SELECT id FROM waiters WHERE username = $1', [username]);
+        console.log('3', result);
+
         if (result) {
             return result.id;
         }
@@ -99,6 +102,7 @@ export default function WaiterDB(db) {
     }
 
     async function setWaiter(user_name) {
+        // console.log('1', user_name);
         await db.none('INSERT INTO waiters (username) VALUES ($1)', [user_name])
     }
     async function scheduleExists(waiterId) {
