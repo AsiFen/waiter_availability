@@ -44,14 +44,13 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
             console.log(result.success);
             req.flash('success', result.success);
         }
-        let success_message = req.flash('success')[0];
+        // let success_message = req.flash('success')[0];
 
         res.render('waiter', {
             username,
             daysofweek,
             schedule: daysofweek,
             error_messages: error_message,
-            success_message
         });
     }
 
