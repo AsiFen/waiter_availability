@@ -1,9 +1,15 @@
 export default function WaiterRoute(waiterSchedule, waiterDB) {
-
     async function getWaiter(req, res, waiterDB) {
         let username = req.body.username;
 
-        await waiterSchedule.valid_waiterName(username);
+        const result = await waiterSchedule.valid_waiterName(username);
+        // check if there is an eror message
+        if (result.errors) {
+            req.flash('errors', result.message);
+        }
+        if (result.succes) {
+            req.flash('success', result.message);
+        }
 
         res.redirect('/waiter/' + username)
     }
@@ -18,15 +24,12 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
             await waiterSchedule.daysToDelete(userList)
         }
 
-        await waiterSchedule.days(checks, username)
-    
-        req.flash('errors', waiterSchedule.errors());
-        req.flash('success', waiterSchedule.successMessage());
+        const result = await waiterSchedule.days(checks, username)
 
         res.redirect('/waiter/' + username)
     }
 
-    async function keepChecked(req, res){
+    async function keepChecked(req, res) {
         const username = req.params.username;
         let getDays = await waiterSchedule.getSelectedDaysForUser(username);
         const daysofweek = await waiterDB.getWeekDays();
@@ -34,7 +37,7 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         let success_message = req.flash('success')[0];
 
         await waiterSchedule.keepChecked(getDays, username, daysofweek)
-    
+
         res.render('waiter', {
             username,
             daysofweek,

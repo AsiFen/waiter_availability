@@ -10,7 +10,6 @@ export default function WaiterDB(db) {
         return weekday_id;
     }
     async function createSchedule(waiter_id, weekday_id) {
-        // console.log('2', waiter_id);
       await db.none('INSERT INTO schedule (waiter_id, weekday_id) VALUES ($1, $2)', [waiter_id, weekday_id])
     }
 
@@ -98,6 +97,7 @@ console.log(results);
     }
 
     async function reset() {
+        
         await db.none('DELETE FROM waiters')
     }
 

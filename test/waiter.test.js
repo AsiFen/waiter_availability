@@ -10,8 +10,8 @@ describe('Database Functions', () => {
   beforeEach(async function () {
     try {
       // clean the tables before each test run
-      await db.none("TRUNCATE TABLE waiters RESTART IDENTITY CASCADE;");
-      await db.none("TRUNCATE TABLE schedule RESTART IDENTITY CASCADE;");
+      await db.none("TRUNCATE TABLE waiters");
+      await db.none("TRUNCATE TABLE schedule");
     } catch (err) {
       throw err;
     }

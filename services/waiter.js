@@ -1,22 +1,28 @@
 export default function WaiterSchedule(WaiterDB) {
     let status;
-    let success = '';
-    let error_message;
-
+    
     async function valid_waiterName(username) {
+        let success_message = '';
+        let error_message = '';
         let pattern = /^[a-zA-Z]+$/;
 
         if (username.match(pattern) && username !== undefined) {
             let isExisting = await WaiterDB.isExisting(username)
             if (isExisting.length == 0) {
                 await WaiterDB.setWaiter(username);
-                success = 'name added successfully!'
+                success_message = 'name added successfully!'
             } else {
                 error_message = 'Username already exists!';
             }
         } else {
             error_message = 'Use alphanumeric values!';
         }
+
+        return {
+            success : success_message,
+            errors : error_message
+        }
+
     }
 
     async function days(selected, username) {
@@ -45,11 +51,11 @@ export default function WaiterSchedule(WaiterDB) {
                 }
 
             } else if (daysLength < 3) {
-                error_message = 'Please choose exactly 3 days';
+            //    error_message = 'Please choose exactly 3 days';
             } else if (daysLength > 3) {
-                error_message = 'Exceeded the expected number. Choose exactly 3 days';
+          //      error_message = 'Exceeded the expected number. Choose exactly 3 days';
             } else if (daysLength === 0) {
-                error_message = 'Cannot leave blank! Please choose days';
+          //      error_message = 'Cannot leave blank! Please choose days';
             }
         }
     }
@@ -73,7 +79,7 @@ export default function WaiterSchedule(WaiterDB) {
                 hold[weekday].waiters.push(username);
                 hold[weekday].status = getStatusColor(hold[weekday].waiters.length); // Set status based on waiters count
             }
-            success = 'Days added successfully!';
+         //   success = 'Days added successfully!';
         }
 
         return hold;
@@ -90,7 +96,7 @@ export default function WaiterSchedule(WaiterDB) {
                     }
                 }
             }
-            success = 'Update successful!';
+          //  success = 'Update successful!';
         }
     }
 
@@ -116,7 +122,7 @@ export default function WaiterSchedule(WaiterDB) {
 
     async function daysToDelete(dayList) {
         if (!Array.isArray(dayList) || dayList.length === 0) {
-            error_message = 'Please select 3 days'
+        //    error_message = 'Please select 3 days'
         }
 
         // Construct a comma-separated list of quoted days to be deleted
