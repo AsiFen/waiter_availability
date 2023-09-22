@@ -1,6 +1,6 @@
 export default function WaiterSchedule(WaiterDB) {
     let status;
-    
+
     async function valid_waiterName(username) {
         let success_message = '';
         let error_message = '';
@@ -19,13 +19,14 @@ export default function WaiterSchedule(WaiterDB) {
         }
 
         return {
-            success : success_message,
-            errors : error_message
+            success: success_message,
+            errors: error_message
         }
 
     }
 
     async function days(selected, username) {
+        let error_message = '';
         let selectedDays = []
         if ((!Array.isArray(selected))) {
             selectedDays.push(selected)
@@ -51,16 +52,21 @@ export default function WaiterSchedule(WaiterDB) {
                 }
 
             } else if (daysLength < 3) {
-            //    error_message = 'Please choose exactly 3 days';
+                error_message = 'Please choose exactly 3 days';
             } else if (daysLength > 3) {
-          //      error_message = 'Exceeded the expected number. Choose exactly 3 days';
+                error_message = 'Exceeded the expected number. Choose exactly 3 days';
             } else if (daysLength === 0) {
-          //      error_message = 'Cannot leave blank! Please choose days';
+                error_message = 'Cannot leave blank! Please choose days';
             }
+        }
+
+        return {
+            errors: error_message
         }
     }
 
     async function getDays() {
+        let success = '';
         let results = await WaiterDB.joinQuery();
         // console.log(results);
         const hold = {
@@ -79,13 +85,17 @@ export default function WaiterSchedule(WaiterDB) {
                 hold[weekday].waiters.push(username);
                 hold[weekday].status = getStatusColor(hold[weekday].waiters.length); // Set status based on waiters count
             }
-         //   success = 'Days added successfully!';
+            success = 'Days added successfully!';
         }
 
-        return hold;
+        return {
+            success: success,
+            data: hold
+        }
     }
 
     async function keepChecked(getDays, username, daysofweek) {
+        let successMessage = '';
         let userLIst = getDays[username]
         if (userLIst != undefined) {
             for (let day in daysofweek) {
@@ -96,7 +106,11 @@ export default function WaiterSchedule(WaiterDB) {
                     }
                 }
             }
-          //  success = 'Update successful!';
+            successMessage = 'Update successful!';
+        }
+        
+        return {
+            success: successMessage
         }
     }
 
@@ -122,7 +136,7 @@ export default function WaiterSchedule(WaiterDB) {
 
     async function daysToDelete(dayList) {
         if (!Array.isArray(dayList) || dayList.length === 0) {
-        //    error_message = 'Please select 3 days'
+            //    error_message = 'Please select 3 days'
         }
 
         // Construct a comma-separated list of quoted days to be deleted
