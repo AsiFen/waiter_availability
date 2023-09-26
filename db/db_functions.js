@@ -21,7 +21,7 @@ export default function WaiterDB(db) {
                 `;
 
         const results = await db.any(daysQuery);
-//         return results;
+        return results;
     }
     
 

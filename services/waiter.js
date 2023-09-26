@@ -37,7 +37,6 @@ export default function WaiterSchedule(WaiterDB) {
 
         let daysLength = selectedDays.length;
         let isExisting = await WaiterDB.isExisting(username)
-        // console.log(isExisting);
         if (isExisting) {
 
             if (daysLength === 3) {
@@ -68,7 +67,7 @@ export default function WaiterSchedule(WaiterDB) {
     async function getDays() {
         let success = '';
         let results = await WaiterDB.joinQuery();
-        // console.log(results);
+        console.log(results);
         const hold = {
             'Monday': { waiters: [], status: '' },
             'Tuesday': { waiters: [], status: '' },
@@ -96,19 +95,18 @@ export default function WaiterSchedule(WaiterDB) {
 
     async function keepChecked(getDays, username, daysofweek) {
         let successMessage = '';
-        let userLIst = getDays[username]
-        if (userLIst != undefined) {
+        let userList = getDays[username]
+        if (userList != undefined) {
             for (let day in daysofweek) {
                 daysofweek[day].checked = false;
-                for (let userDay of userLIst) {
+                for (let userDay of userList) {
                     if (daysofweek[day].weekday == userDay) {
                         daysofweek[day].checked = true;
+                        successMessage = 'Update successful!';
                     }
                 }
             }
-            successMessage = 'Update successful!';
         }
-        
         return {
             success: successMessage
         }
