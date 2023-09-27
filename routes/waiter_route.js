@@ -21,6 +21,7 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         let userList = getDays[username]
 
         if (userList) {
+            req.flash('success', 'Update successful!');
             await waiterSchedule.daysToDelete(userList)
         }
 

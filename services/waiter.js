@@ -102,7 +102,6 @@ export default function WaiterSchedule(WaiterDB) {
                 for (let userDay of userList) {
                     if (daysofweek[day].weekday == userDay) {
                         daysofweek[day].checked = true;
-                        successMessage = 'Update successful!';
                     }
                 }
             }
