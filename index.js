@@ -23,7 +23,7 @@ let waiterDB = WaiterDB(db)
 let waiterSchedule = WaiterSchedule(waiterDB);
 //instantiate my routes
 let waiterRoute = WaiterRoute(waiterSchedule, waiterDB)
-let admin_route = AdminSchedule(waiterSchedule)
+let admin_route = AdminSchedule(waiterSchedule, waiterDB)
 
 //instantiate express module
 let app = express();

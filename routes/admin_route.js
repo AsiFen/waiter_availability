@@ -1,4 +1,4 @@
-export default function AdminSchedule(waiterSchedule) {
+export default function AdminSchedule(waiterSchedule, waiterDB) {
 
     async function showSchedule(req, res) {
         let getDays = await waiterSchedule.getDays();
@@ -19,10 +19,10 @@ export default function AdminSchedule(waiterSchedule) {
         })
     }
 
-    async function clear(req, res, waiterDB) {
+    async function clear(req, res) {
         req.flash('reset', 'Successfully reset!')
         await waiterDB.reset();
-        res.redirect('/admin')
+         res.redirect('/admin')
     }
 
 
