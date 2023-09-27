@@ -34,7 +34,6 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
             req.flash('success', result.success);
         }
 
-
         res.redirect('/waiter/' + username)
     }
 
@@ -48,13 +47,14 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         // if (result.success) {
         //     req.flash('success', result.success);
         // }
-        // let success_message = req.flash('success')[0];
+        let success_message = req.flash('success')[0];
 
         res.render('waiter', {
             username,
             daysofweek,
             schedule: daysofweek,
             error_messages: error_message,
+            success_message
             
         });
     }

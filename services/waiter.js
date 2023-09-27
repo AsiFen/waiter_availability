@@ -128,6 +128,8 @@ export default function WaiterSchedule(WaiterDB) {
             }
         });
 
+        
+
         return selectedDays;
     }
 
