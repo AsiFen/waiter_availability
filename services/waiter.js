@@ -98,7 +98,6 @@ export default function WaiterSchedule(WaiterDB) {
     }
 
     async function keepChecked(getDays, username, daysofweek) {
-        let successMessage = '';
         let userList = getDays[username]
         if (userList != undefined) {
             for (let day in daysofweek) {
@@ -109,9 +108,6 @@ export default function WaiterSchedule(WaiterDB) {
                     }
                 }
             }
-        }
-        return {
-            success: successMessage
         }
     }
 
@@ -137,13 +133,11 @@ export default function WaiterSchedule(WaiterDB) {
 
     async function daysToDelete(dayList) {
         if (!Array.isArray(dayList) || dayList.length === 0) {
-            //    error_message = 'Please select 3 days'
+               error_message = 'Please select 3 days'
         }
 
         // Construct a comma-separated list of quoted days to be deleted
         const daysToDelete = dayList.map(day => `'${day}'`).join(', ');
-        // console.log(daysToDelete);
-        // Use a SQL DELETE statement to remove the specified days from the "waiter" table
         await WaiterDB.deleteSelectedQuery(daysToDelete)
     }
 
