@@ -6,7 +6,7 @@ export default function WaiterDB(db) {
     }
 
     async function getWeekdayId(day) {
-        let weekday_id = await db.any('SELECT id FROM weekdays WHERE weekday=$1', [day])
+        let weekday_id = await db.one('SELECT id FROM weekdays WHERE weekday=$1', [day])
         return weekday_id;
     }
     async function createSchedule(waiter_id, weekday_id) {
