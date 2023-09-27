@@ -1,13 +1,13 @@
 
-CREATE TABLE waiters (
- id serial PRIMARY KEY,
- username VARCHAR NOT NULL
-);
+-- CREATE TABLE waiters (
+--  id serial PRIMARY KEY,
+--  username VARCHAR NOT NULL
+-- );
 
-CREATE TABLE weekdays (
-    id serial PRIMARY KEY,
-    weekday VARCHAR NOT NULL
-);
+-- CREATE TABLE weekdays (
+--     id serial PRIMARY KEY,
+--     weekday VARCHAR NOT NULL
+-- );
 
 CREATE TABLE schedule (
     id serial PRIMARY KEY,

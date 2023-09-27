@@ -27,6 +27,7 @@ export default function WaiterSchedule(WaiterDB) {
 
     async function days(selected, username) {
         let error_message = '';
+        let success_message = '';
         let selectedDays = []
         if ((!Array.isArray(selected))) {
             selectedDays.push(selected)
@@ -39,8 +40,7 @@ export default function WaiterSchedule(WaiterDB) {
         let isExisting = await WaiterDB.isExisting(username)
         if (isExisting) {
 
-            if (daysLength === 3) {
-
+            if (daysLength == 3) {                
                 let waiter_id = await WaiterDB.getWaiterId(username);
                 // Loop through the selected days and update hold2
                 for (let i = 0; i < daysLength; i++) {
@@ -49,6 +49,7 @@ export default function WaiterSchedule(WaiterDB) {
                     let weekday_id = await WaiterDB.getWeekdayId(day)
                     await WaiterDB.createSchedule(waiter_id, weekday_id.id)
                 }
+                success_message = 'successfully added';
 
             } else if (daysLength < 3) {
                 error_message = 'Please choose exactly 3 days';
@@ -57,9 +58,13 @@ export default function WaiterSchedule(WaiterDB) {
             } else if (daysLength === 0) {
                 error_message = 'Cannot leave blank! Please choose days';
             }
-        }
+            else{
+                success_message = 'successfully added';
+            }
 
+        }
         return {
+            success : success_message,
             errors: error_message
         }
     }
@@ -67,7 +72,6 @@ export default function WaiterSchedule(WaiterDB) {
     async function getDays() {
         let success = '';
         let results = await WaiterDB.joinQuery();
-        console.log(results);
         const hold = {
             'Monday': { waiters: [], status: '' },
             'Tuesday': { waiters: [], status: '' },

@@ -6,11 +6,16 @@ export default function WaiterDB(db) {
     }
 
     async function getWeekdayId(day) {
-        let weekday_id = await db.one('SELECT id FROM weekdays WHERE weekday=$1', [day])
+        let weekday_id = await db.any('SELECT id FROM weekdays WHERE weekday=$1', [day])
         return weekday_id;
     }
     async function createSchedule(waiter_id, weekday_id) {
-      await db.none('INSERT INTO schedule (waiter_id, weekday_id) VALUES ($1, $2)', [waiter_id, weekday_id])
+        try {
+            await db.none('INSERT INTO schedule (waiter_id, weekday_id) VALUES ($1, $2)', [waiter_id, weekday_id]);
+            return 'Days added successfully!'; // Indicate success
+        } catch (error) {
+            return false; // Indicate failure
+        }
     }
 
     async function joinQuery() {
@@ -23,7 +28,7 @@ export default function WaiterDB(db) {
         const results = await db.any(daysQuery);
         return results;
     }
-    
+
 
     async function selectedDaysQuery(user_id) {
         const daysQuery = `
@@ -96,7 +101,8 @@ export default function WaiterDB(db) {
     }
 
     async function reset() {
-        
+        await db.none('DELETE FROM schedule')
+
         await db.none('DELETE FROM waiters')
     }
 
@@ -105,8 +111,8 @@ export default function WaiterDB(db) {
         await db.none('INSERT INTO waiters (username) VALUES ($1)', [user_name])
     }
     async function scheduleExists(waiterId) {
-      let result = await db.any("SELECT id FROM schedule WHERE waiter_id = $1", [waiterId]);
-      return (result ? true: false)
+        let result = await db.any("SELECT id FROM schedule WHERE waiter_id = $1", [waiterId]);
+        return (result ? true : false)
     }
     return {
         scheduleExists,

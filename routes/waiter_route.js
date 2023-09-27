@@ -30,6 +30,10 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         if (result.errors) {
             req.flash('errors', result.errors);
         }
+        if (result.success) {
+            req.flash('success', result.success);
+        }
+
 
         res.redirect('/waiter/' + username)
     }

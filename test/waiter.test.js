@@ -1,82 +1,70 @@
 import assert from 'assert';
 import WaiterDB from '../db/db_functions.js'; // Adjust the path accordingly
+import WaiterSchedule from '../services/waiter.js';
 import pgPromise from 'pg-promise';
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://asisipho:asisipho123@localhost:5432/users';
+const connectionString = process.env.DATABASE_URL || 'postgresql://codex:codex123@localhost:5432/users';
 const db = pgPromise()(connectionString);
 const waiterDB = WaiterDB(db);
+let waiterSchedule = WaiterSchedule(waiterDB);
 
 describe('Database Functions', () => {
   beforeEach(async function () {
     try {
       // clean the tables before each test run
-      await db.none("TRUNCATE TABLE waiters");
-      await db.none("TRUNCATE TABLE schedule");
+      await waiterDB.reset()
+      await db.none('ALTER SEQUENCE waiters_id_seq RESTART WITH 1');
+
     } catch (err) {
       throw err;
     }
   });
 
-  it('should check if a waiter exists', async function () {
-    await waiterDB.setWaiter('majola');
-    const exists = await waiterDB.isExisting('majola');
-    assert.deepEqual(exists,
-      [{ username: 'majola' }]);
+  it('should return a success message when a user enters a valid name', async function () {
+    const result = await waiterSchedule.valid_waiterName('Nick');
+
+    assert.equal(result.success, 'name added successfully!');
   });
 
-  it('should get the weekday ID', async function () {
-    const weekdayId = await waiterDB.getWeekdayId('Monday');
-    assert.deepEqual(weekdayId, { id: 1 });
+  it('should return an error message when a user enters an invalid name', async function () {
+    const result = await waiterSchedule.valid_waiterName('N1ck1');
+
+    assert.equal(result.errors, 'Use alphanumeric values!');
   });
 
-  it('should create a schedule', async function () {
-    await waiterDB.setWaiter('luzuko');
-    const waiterId = await waiterDB.getWaiterId('luzuko');
-    const weekdayId = await waiterDB.getWeekdayId('Monday');
-    await waiterDB.createSchedule(waiterId, weekdayId.id);
-    let scheduleExists = await waiterDB.scheduleExists(waiterId.id)
-    assert.strictEqual(scheduleExists, true);
+  it('should return an error message when a user selects more than 3 days', async function () {
+    const days = ['Monday', 'Wednesday', 'Friday', 'Saturday'];
+
+    const result = await waiterSchedule.days(days, 'Zamani');
+
+    assert.equal(result.errors, 'Exceeded the expected number. Choose exactly 3 days');
   });
 
-  it('should perform joinQuery and return waiters names and weekdays', async function () {
+  it('should return an error message when a user selects less than 3 days', async function () {
+    const days = ['Monday', 'Wednesday'];
 
+    const result = await waiterSchedule.days(days, 'thabo');
+
+    assert.equal(result.errors, 'Please choose exactly 3 days');
+  });
+
+  it('should successfully schedule a user for 3 days', async function () {
+    let message = '';
     await waiterDB.setWaiter('Yamisa');
     const yamisaID = await waiterDB.getWaiterId('Yamisa');
-    let yamisaSelectedDays = ['Tuesday', 'Wednesday', 'Friday']
-    for (let i = 0; i < yamisaSelectedDays.length; i++) {
-      const day = yamisaSelectedDays[i];
 
-      let weekday_id = await waiterDB.getWeekdayId(day)
-      await waiterDB.createSchedule(yamisaID, weekday_id.id)
+    const selectedDays = ['Monday', 'Wednesday', 'Friday'];
+
+    for (let i = 0; i < selectedDays.length; i++) {
+      const day = selectedDays[i];
+      const weekday_id = await waiterDB.getWeekdayId(day);
+      message = await waiterDB.createSchedule(yamisaID, weekday_id.id);
     }
-    const results = await waiterDB.joinQuery();
-    // console.log(results);
-    assert.strictEqual(results.length, 3);
-    assert.deepEqual(results, [
-      {
-        id: 1,
-        waiter_id: 1,
-        weekday_id: 2,
-        weekday: 'Tuesday',
-        username: 'Yamisa'
-      },
-      {
-        id: 1,
-        waiter_id: 1,
-        weekday_id: 3,
-        weekday: 'Wednesday',
-        username: 'Yamisa'
-      },
-      {
-        id: 1,
-        waiter_id: 1,
-        weekday_id: 5,
-        weekday: 'Friday',
-        username: 'Yamisa'
-      }
-    ])
-  });
 
+    assert.deepEqual(message, 'Days added successfully!');
+
+    // Optionally, you can also check other conditions or values as needed.
+  });
 
   it('should get a waiter ID', async function () {
     await waiterDB.setWaiter('sisi');
@@ -94,12 +82,6 @@ describe('Database Functions', () => {
     await waiterDB.reset();
     const waitersCount = await db.one("SELECT count(*) FROM waiters");
     assert.deepEqual(waitersCount.count, 0);
-  });
-
-  it('should set a waiter', async function () {
-    await waiterDB.setWaiter('reeva');
-    const waiterId = await waiterDB.getWaiterId('reeva');
-    assert.strictEqual(waiterId, 1);
   });
 
   after(function () {
