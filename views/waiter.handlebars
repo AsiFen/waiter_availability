@@ -38,9 +38,11 @@
             </div>
         </form>
 
+            {{#if username}}
         <div class="selection">
             <form action="/waiter/{{username}}" method="post">
                 <p class="text-xl text-neutral-900 underline mt-4 mb-4 ">{{username}}'s Roster</p>
+
                 <fieldset class="border border-solid border-gray-500 p-5">
                     <legend>Select 3 days: </legend>
                     <!-- Loop through the days of the week and their properties -->
@@ -57,6 +59,7 @@
                     done</button>
             </form>
         </div>
+            {{/if}}
     </div>
 </div>
 
