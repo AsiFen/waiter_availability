@@ -50,11 +50,12 @@ export default function WaiterDB(db) {
     async function deleteSelectedQuery(daysToDelete, username) {
         const waiterId = await getWaiterId(username);
         const weekdayIds = [];
+        console.log(daysToDelete);
         for (const day of daysToDelete) {
             const weekdayId = await getWeekdayId(day);
             weekdayIds.push(weekdayId.id);
         }
-        console.log(weekdayIds);
+        // console.log(weekdayIds);
         await db.none(`
           DELETE FROM schedule
           WHERE waiter_id = $1
@@ -82,10 +83,9 @@ export default function WaiterDB(db) {
 
     async function getAllUsers() {
         let result = await db.any('SELECT DISTINCT username FROM waiters')
-        //   console.log(result);
+        //    console.log(result);
         return result.username;
     }
-    getAllUsers()
     async function reset() {
         await db.none('DELETE FROM schedule')
 

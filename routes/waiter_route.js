@@ -19,26 +19,25 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         let checks = req.body.checks;
         let getDays = await waiterSchedule.getSelectedDaysForUser(username);
         let userList = getDays[username]
-
-        const isIdentical = userList.length === checks.length && userList.every((value, index) => value === checks[index]);
-
-        if (!isIdentical) {
-            req.flash('success', 'Update successful!');
-        } 
-        if (userList) {
+        console.log(checks, userList);
+        if (checks.length === 3 && userList) {
+            const isIdentical = userList.length === checks.length && userList.every((value, index) => value === checks[index]);
+            if (!isIdentical) {
+                req.flash('success', 'Update successful!');
+            }
+        
             // req.flash('success', 'Update successful!');
             await waiterSchedule.daysToDelete(userList, username)
         }
-
-        const result = await waiterSchedule.days(checks, username)
-        // check if there is an eror message
-        if (result.errors) {
-            req.flash('errors', result.errors);
-        }
-        if (result.success) {
-            req.flash('success', result.success);
-        }
-
+            const result = await waiterSchedule.days(checks, username)
+            // check if there is an eror message
+            if (result.errors) {
+                req.flash('errors', result.errors);
+            }
+            if (result.success) {
+                req.flash('success', result.success);
+            }
+        
         res.redirect('/waiter/' + username)
     }
 

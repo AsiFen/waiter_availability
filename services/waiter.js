@@ -61,9 +61,9 @@ export default function WaiterSchedule(WaiterDB) {
             } else if (daysLength === 0) {
                 error_message = 'Cannot leave blank! Please choose days';
             }
-            else {
-                success_message = 'successfully added';
-            }
+            // else {
+            //     success_message = 'successfully added';
+            // }
 
         }
         return {
@@ -92,7 +92,7 @@ export default function WaiterSchedule(WaiterDB) {
                 hold[weekday].waiters.push(username);
                 hold[weekday].status = getStatusColor(hold[weekday].waiters.length); // Set status based on waiters count
             }
-            success = 'Days added successfully!';
+            // success = 'Days added successfully!';
         }
 
         return {
@@ -132,19 +132,21 @@ export default function WaiterSchedule(WaiterDB) {
             }
         });
 
-
-
         return selectedDays;
     }
 
     async function daysToDelete(dayList, username) {
         if (!Array.isArray(dayList) || dayList.length === 0) {
-            error_message = 'Please select 3 days'
+          let error_message = 'Please select 3 days'
         }
 
         // Construct a comma-separated list of quoted days to be deleted
         // const daysToDelete = dayList.map(day => `'${day}'`).join(', ');
         await WaiterDB.deleteSelectedQuery(dayList, username)
+
+        return {
+            errors: error_message
+        }
     }
 
     function getStatusColor(waitersCount) {
