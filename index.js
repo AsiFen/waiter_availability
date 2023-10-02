@@ -17,6 +17,7 @@ import WaiterSchedule from './services/waiter.js';
 //importing my routes
 import AdminSchedule from './routes/admin_route.js';
 import WaiterRoute from './routes/waiter_route.js';
+import LoginRoute from './routes/login_route.js';
 
 let waiterDB = WaiterDB(db)
 //instantiate the logic function 
@@ -24,6 +25,7 @@ let waiterSchedule = WaiterSchedule(waiterDB);
 //instantiate my routes
 let waiterRoute = WaiterRoute(waiterSchedule, waiterDB)
 let admin_route = AdminSchedule(waiterSchedule, waiterDB)
+let login_route = LoginRoute(waiterSchedule, waiterDB)
 
 //instantiate express module
 let app = express();
@@ -70,42 +72,8 @@ app.get('/login', async (req, res) => {
     })
 })
 
-app.post('/login', async (req, res) => {
-    console.log(req.body);
-    let username = req.body.waitername;
-    const waiter_passcode = req.body.waitercode;
-    const admin_passcode = req.body.admincode;
-    if (req.body.role === 'on') {
-        if (username.toLowerCase() === 'asisipho' && admin_passcode === 'asi123') {
-            res.redirect('/admin');
-        }
-        else {
-            req.flash('errors', 'Enter your correct admin details');
-            res.redirect('/login');
-        }
-        
-    } else {
-        const result = await waiterSchedule.valid_waiterName(username);
+app.post('/login', login_route.login);
 
-        if (result.errors) {
-            req.flash('errors', result.errors);
-            req.flash('success', ''); // Clear any previous success message
-        }  if (result.success) {
-            req.flash('success', result.success);
-            req.flash('errors', ''); // Clear any previous error message
-        }
-
-        if (waiter_passcode.length === 6) {
-            res.redirect('/waiter/' + result.user);
-        } else {
-            req.flash('errors', 'Enter your 6-digit passcode.');
-            req.flash('success', ''); // Clear any success message
-            res.redirect('/login');
-        }
-    }
-});
-
-// app.post('/waiter', waiterRoute.getWaiter)
 
 app.get('/waiter/:username', waiterRoute.keepChecked);
 

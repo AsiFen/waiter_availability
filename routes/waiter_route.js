@@ -47,7 +47,6 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         let error_message = req.flash('errors')[0];
         let success_message = req.flash('success')[0];
         await waiterSchedule.keepChecked(getDays, username, daysofweek)
-        console.log(success_message, error_message);
         // if (result.success) {
         //     req.flash('success', result.success);
         // }
