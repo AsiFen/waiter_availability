@@ -3,12 +3,14 @@ export default function WaiterSchedule(WaiterDB) {
 
     async function valid_waiterName(username) {
         let success_message = '';
+        let valid_username = '';
         let error_message = '';
         let pattern = /^[a-zA-Z]+$/;
 
         if (username.match(pattern) && username !== undefined) {
             let isExisting = await WaiterDB.isExisting(username)
             if (isExisting.length == 0) {
+                valid_username = username
                 await WaiterDB.setWaiter(username);
                 success_message = 'name added successfully!'
             } else {
@@ -19,6 +21,7 @@ export default function WaiterSchedule(WaiterDB) {
         }
 
         return {
+            user: valid_username,
             success: success_message,
             errors: error_message
         }
@@ -40,7 +43,7 @@ export default function WaiterSchedule(WaiterDB) {
         let isExisting = await WaiterDB.isExisting(username)
         if (isExisting) {
 
-            if (daysLength == 3) {                
+            if (daysLength == 3) {
                 let waiter_id = await WaiterDB.getWaiterId(username);
                 // Loop through the selected days and update hold2
                 for (let i = 0; i < daysLength; i++) {
@@ -58,13 +61,13 @@ export default function WaiterSchedule(WaiterDB) {
             } else if (daysLength === 0) {
                 error_message = 'Cannot leave blank! Please choose days';
             }
-            else{
+            else {
                 success_message = 'successfully added';
             }
 
         }
         return {
-            success : success_message,
+            success: success_message,
             errors: error_message
         }
     }
@@ -72,6 +75,7 @@ export default function WaiterSchedule(WaiterDB) {
     async function getDays() {
         let success = '';
         let results = await WaiterDB.joinQuery();
+        // console.log(results);
         const hold = {
             'Monday': { waiters: [], status: '' },
             'Tuesday': { waiters: [], status: '' },
@@ -128,19 +132,19 @@ export default function WaiterSchedule(WaiterDB) {
             }
         });
 
-        
+
 
         return selectedDays;
     }
 
-    async function daysToDelete(dayList) {
+    async function daysToDelete(dayList, username) {
         if (!Array.isArray(dayList) || dayList.length === 0) {
-               error_message = 'Please select 3 days'
+            error_message = 'Please select 3 days'
         }
 
         // Construct a comma-separated list of quoted days to be deleted
-        const daysToDelete = dayList.map(day => `'${day}'`).join(', ');
-        await WaiterDB.deleteSelectedQuery(daysToDelete)
+        // const daysToDelete = dayList.map(day => `'${day}'`).join(', ');
+        await WaiterDB.deleteSelectedQuery(dayList, username)
     }
 
     function getStatusColor(waitersCount) {

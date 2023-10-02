@@ -31,6 +31,7 @@ export default function WaiterDB(db) {
 
 
     async function selectedDaysQuery(user_id) {
+
         const daysQuery = `
         SELECT  * FROM schedule
         JOIN weekdays ON weekdays.id = schedule.weekday_id
@@ -42,39 +43,23 @@ export default function WaiterDB(db) {
             clause = ` WHERE waiters.username = '${user_id}'`;
         }
 
-        const results = await db.any(daysQuery + clause);
-        // console.log(results);
+        const results = await db.any(daysQuery);
         return results;
     }
 
-    async function deleteSelectedQuery(daysToDelete) {
-        // Delete associated schedule records first
+    async function deleteSelectedQuery(daysToDelete, username) {
+        const waiterId = await getWaiterId(username);
+        const weekdayIds = [];
+        for (const day of daysToDelete) {
+            const weekdayId = await getWeekdayId(day);
+            weekdayIds.push(weekdayId.id);
+        }
+        console.log(weekdayIds);
         await db.none(`
-            DELETE FROM schedule
-            WHERE waiter_id IN (
-                SELECT id
-                FROM waiters
-                WHERE id IN (
-                    SELECT DISTINCT waiters.id
-                    FROM waiters
-                    JOIN schedule ON waiters.id = schedule.waiter_id
-                    JOIN weekdays ON schedule.weekday_id = weekdays.id
-                    WHERE weekdays.weekday IN (${daysToDelete})
-                )
-            )
-        `);
-
-        // Now you can safely delete the waiter records
-        await db.none(`
-            DELETE FROM waiters
-            WHERE id IN (
-                SELECT DISTINCT waiters.id
-                FROM waiters
-                JOIN schedule ON waiters.id = schedule.waiter_id
-                JOIN weekdays ON schedule.weekday_id = weekdays.id
-                WHERE weekdays.weekday IN (${daysToDelete})
-            )
-        `);
+          DELETE FROM schedule
+          WHERE waiter_id = $1
+          AND weekday_id IN (${weekdayIds})
+        `, [waiterId]);
     }
 
 
@@ -97,9 +82,10 @@ export default function WaiterDB(db) {
 
     async function getAllUsers() {
         let result = await db.any('SELECT DISTINCT username FROM waiters')
+        //   console.log(result);
         return result.username;
     }
-
+    getAllUsers()
     async function reset() {
         await db.none('DELETE FROM schedule')
 

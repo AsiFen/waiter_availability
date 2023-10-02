@@ -3,7 +3,7 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         let username = req.body.username;
 
         const result = await waiterSchedule.valid_waiterName(username);
-        // check if there is an eror message
+        // console.log(result);
         if (result.errors) {
             req.flash('errors', result.errors);
         }
@@ -11,7 +11,7 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
             req.flash('success', result.success);
         }
 
-        res.redirect('/waiter/' + username)
+        res.redirect('/waiter/' + result.user)
     }
 
     async function selectDays(req, res, waiterDB) {
@@ -20,9 +20,14 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         let getDays = await waiterSchedule.getSelectedDaysForUser(username);
         let userList = getDays[username]
 
-        if (userList) {
+        const isIdentical = userList.length === checks.length && userList.every((value, index) => value === checks[index]);
+
+        if (!isIdentical) {
             req.flash('success', 'Update successful!');
-            await waiterSchedule.daysToDelete(userList)
+        } 
+        if (userList) {
+            // req.flash('success', 'Update successful!');
+            await waiterSchedule.daysToDelete(userList, username)
         }
 
         const result = await waiterSchedule.days(checks, username)
@@ -42,7 +47,7 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         let getDays = await waiterSchedule.getSelectedDaysForUser(username);
         const daysofweek = await waiterDB.getWeekDays();
         let error_message = req.flash('errors')[0];
-        
+
         await waiterSchedule.keepChecked(getDays, username, daysofweek)
         // if (result.success) {
         //     req.flash('success', result.success);
@@ -55,7 +60,7 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
             schedule: daysofweek,
             error_messages: error_message,
             success_message
-            
+
         });
     }
 
