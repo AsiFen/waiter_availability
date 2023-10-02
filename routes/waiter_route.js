@@ -19,7 +19,6 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         let checks = req.body.checks;
         let getDays = await waiterSchedule.getSelectedDaysForUser(username);
         let userList = getDays[username]
-        console.log(checks, userList);
         if (checks.length === 3 && userList) {
             const isIdentical = userList.length === checks.length && userList.every((value, index) => value === checks[index]);
             if (!isIdentical) {
@@ -45,20 +44,16 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
         const username = req.params.username;
         let getDays = await waiterSchedule.getSelectedDaysForUser(username);
         const daysofweek = await waiterDB.getWeekDays();
-        let error_message = req.flash('errors')[0];
-
+       
         await waiterSchedule.keepChecked(getDays, username, daysofweek)
         // if (result.success) {
         //     req.flash('success', result.success);
         // }
-        let success_message = req.flash('success')[0];
 
         res.render('waiter', {
             username,
             daysofweek,
             schedule: daysofweek,
-            error_messages: error_message,
-            success_message
 
         });
     }

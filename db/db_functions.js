@@ -88,8 +88,6 @@ export default function WaiterDB(db) {
     }
     async function reset() {
         await db.none('DELETE FROM schedule')
-
-        await db.none('DELETE FROM waiters')
     }
 
     async function setWaiter(user_name) {

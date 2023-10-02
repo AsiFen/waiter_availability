@@ -31,14 +31,7 @@
         </script>
 
 
-        <form action="/waiter" method="post">
-            <div>
-                <label for="name">Enter name:<input type="text" value="" class="bg-neutral-100" name="username"></label>
-                <button type="submit" class="border border-solid bg-neutral-300 py-2 rounded">Enter</button>
-            </div>
-        </form>
 
-            {{#if username}}
         <div class="selection">
             <form action="/waiter/{{username}}" method="post">
                 <p class="text-xl text-neutral-900 underline mt-4 mb-4 ">{{username}}'s Roster</p>
@@ -59,7 +52,7 @@
                     done</button>
             </form>
         </div>
-            {{/if}}
+
     </div>
 </div>
 

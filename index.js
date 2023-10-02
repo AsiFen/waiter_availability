@@ -17,6 +17,7 @@ import WaiterSchedule from './services/waiter.js';
 //importing my routes
 import AdminSchedule from './routes/admin_route.js';
 import WaiterRoute from './routes/waiter_route.js';
+import e from 'express';
 
 let waiterDB = WaiterDB(db)
 //instantiate the logic function 
@@ -47,20 +48,58 @@ app.use(bodyParser.json())
 app.use(express.static('public'))
 
 app.get('/', async (req, res) => {
-    res.redirect('/waiter')
+    res.redirect('/login')
 })
 
 app.get('/admin', admin_route.showSchedule)
 
 app.get('/waiter/', async (req, res) => {
-    res.render('waiter');
+    let username = req.params
+    res.render('waiter', {
+        username
+    });
 });
 
-app.post('/waiter', waiterRoute.getWaiter)
+app.get('/login', async (req, res) => {
+    let error_message = req.flash('errors')[0];
+    let success_message = req.flash('success')[0];
+
+    res.render('login', {
+        error_messages: error_message,
+        success_message
+
+    })
+})
+
+app.post('/login', async (req, res) => {
+    console.log(req.body);
+    const waiter_passcode = req.body.waitercode;
+    const admin_passcode = req.body.admincode;
+    let username = req.body.waitername;
+    const result = await waiterSchedule.valid_waiterName(username);
+    console.log(result);
+    if (result.errors) {
+        req.flash('errors', result.errors);
+    }
+    if (result.success) {
+        req.flash('success', result.success);
+    }
+
+    if (waiter_passcode.length === 6) {
+        res.redirect('/waiter/' + result.user)
+
+    } else {
+        req.flash('errors', 'Enter your 6 digit passcode.')
+        res.redirect('/login')
+    }
+
+})
+
+// app.post('/waiter', waiterRoute.getWaiter)
 
 app.get('/waiter/:username', waiterRoute.keepChecked);
 
-app.post('/waiter/:username',waiterRoute.selectDays)
+app.post('/waiter/:username', waiterRoute.selectDays)
 
 app.post('/reset', admin_route.clear)
 

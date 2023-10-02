@@ -125,6 +125,15 @@ html {
   width: 100%;
 }
 
+.log_in {
+  display: flex;
+  place-items: center;
+  justify-content: center;
+  margin: 12em;
+  padding: 1em;
+;
+}
+
 @media only screen and (max-width: 768px) {
 
   /* For mobile phones: */
@@ -142,5 +151,6 @@ html {
   span {
     width: -3em;
   }
+
 
 }

@@ -8,13 +8,13 @@ export default function WaiterSchedule(WaiterDB) {
         let pattern = /^[a-zA-Z]+$/;
 
         if (username.match(pattern) && username !== undefined) {
+            valid_username = username
             let isExisting = await WaiterDB.isExisting(username)
             if (isExisting.length == 0) {
-                valid_username = username
                 await WaiterDB.setWaiter(username);
                 success_message = 'name added successfully!'
             } else {
-                error_message = 'Username already exists!';
+                success_message = `Welcome back ${username}`;
             }
         } else {
             error_message = 'Use alphanumeric values!';
@@ -137,7 +137,7 @@ export default function WaiterSchedule(WaiterDB) {
 
     async function daysToDelete(dayList, username) {
         if (!Array.isArray(dayList) || dayList.length === 0) {
-          let error_message = 'Please select 3 days'
+            let error_message = 'Please select 3 days'
         }
 
         // Construct a comma-separated list of quoted days to be deleted

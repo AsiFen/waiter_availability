@@ -1,0 +1,80 @@
+<div class="flex h-screen items-center justify-center bg-gradient-to-r from-cyan-400 to-blue-400">
+    <form action="/login" method="post" class="bg-white p-8 rounded-lg shadow-lg">
+        <!-- Your login form content goes here -->
+
+        <div class="mb-4">
+            <label for="name" class="block text-gray-700 font-bold">Name:</label>
+            <input type="text" name="waitername" id="name" class="border border-gray-300 rounded-lg px-4 py-2">
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold">Role:</label>
+            <div class="relative inline-block w-10 align-middle select-none">
+                <input type="checkbox" name="role" id="role-checkbox"
+                    class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer">
+                <label for="role-checkbox"
+                    class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+            </div>
+        </div>
+
+        <div class="mb-4" id="waiter-code-input" style="display: none;">
+            <label for="waiter-code" class="block text-gray-700 font-bold">Waiter Code:</label>
+            <input type="password" name="waitercode" id="waiter-code" placeholder="Enter your assigned code"
+                class="border border-gray-300 rounded-lg px-4 py-2">
+        </div>
+
+        <div class="mb-4" id="admin-code-input" style="display: none;">
+            <label for="admin-code" class="block text-gray-700 font-bold">Admin Code:</label>
+            <input type="password" name="admincode" id="admin-code" placeholder="Enter admin code"
+                class="border border-gray-300 rounded-lg px-4 py-2">
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg">Login</button>
+        </div>
+    </form>
+    <script>
+        document.getElementById('role-checkbox').addEventListener('change', function () {
+            const waiterCodeInput = document.getElementById('waiter-code-input');
+            const adminCodeInput = document.getElementById('admin-code-input');
+
+            if (this.checked) {
+                waiterCodeInput.style.display = 'none';
+                adminCodeInput.style.display = 'block';
+            } else {
+                adminCodeInput.style.display = 'none';
+                waiterCodeInput.style.display = 'block';
+            }
+        });
+    </script>
+
+    {{#if error_messages}}
+    <div class="error-container text-center mb-4">
+        <div class="error-msg">
+            <i class="fa fa-times-circle"></i>
+            {{error_messages}}
+        </div>
+        <script>
+            // Clear the error message after 3 seconds
+            setTimeout(function () {
+                document.querySelector('.error-msg').style.display = 'none';
+            }, 3000);
+        </script>
+    </div>
+    {{/if}}
+
+    {{#if success_message}}
+    <div class="info-container text-center mb-4">
+        <div class="info-msg">
+            <i class="fa fa-info-circle"></i>
+            {{success_message}}
+        </div>
+        <script>
+            // Clear the success message after 3 seconds
+            setTimeout(function () {
+                document.querySelector('.info-msg').style.display = 'none';
+            }, 3000);
+        </script>
+    </div>
+    {{/if}}
+</div>

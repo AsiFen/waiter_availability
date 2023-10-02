@@ -27,7 +27,7 @@
             <div
                 class="flex daysofweek mr-2 border border-neutral-700 border-solid {{#if this.status}}bg-{{this.status}}-500{{/if}}">
                 <span class="text-xl bold border border-neutral-950 w-40">{{@key}}</span>
-                <ol class="flex ml-6 list-decimal">
+                <ol class="flex ml-6">
                     {{#each this.waiters}} <!-- Access the array of waiters for this day -->
                     <a href="/waiter/{{this}}">
                         <li class="py-2 ml-4 mr-4 justify-center">{{this}}</li>
