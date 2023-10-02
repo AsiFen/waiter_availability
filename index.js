@@ -17,7 +17,6 @@ import WaiterSchedule from './services/waiter.js';
 //importing my routes
 import AdminSchedule from './routes/admin_route.js';
 import WaiterRoute from './routes/waiter_route.js';
-import e from 'express';
 
 let waiterDB = WaiterDB(db)
 //instantiate the logic function 
@@ -83,12 +82,10 @@ app.post('/login', async (req, res) => {
         else {
             req.flash('errors', 'Enter your correct admin details');
             res.redirect('/login');
-
         }
         
     } else {
         const result = await waiterSchedule.valid_waiterName(username);
-        console.log(result);
 
         if (result.errors) {
             req.flash('errors', result.errors);
@@ -107,7 +104,6 @@ app.post('/login', async (req, res) => {
         }
     }
 });
-
 
 // app.post('/waiter', waiterRoute.getWaiter)
 
