@@ -83,8 +83,7 @@ export default function WaiterDB(db) {
 
     async function getAllUsers() {
         let result = await db.any('SELECT DISTINCT username FROM waiters')
-        //    console.log(result);
-        return result.username;
+        return result;
     }
     async function reset() {
         await db.none('DELETE FROM schedule')

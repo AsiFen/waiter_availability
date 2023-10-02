@@ -1,4 +1,33 @@
-<div class="flex h-screen items-center justify-center bg-gradient-to-r from-cyan-400 to-blue-400">
+<div class="flex h-screen items-center justify-center bg-gradient-to-r from-cyan-400 to-blue-400 flex-col">
+
+     <div class="mb-4 text-center wrap">
+        {{#if error_messages}}
+        <div class="error-msg">
+            <i class="fa fa-times-circle"></i>
+            {{error_messages}}
+        </div>
+        <script>
+            // Clear the error message after 3 seconds
+            setTimeout(function () {
+                document.querySelector('.error-msg').style.display = 'none';
+            }, 3000);
+        </script>
+        {{/if}}
+
+        {{#if success_message}}
+        <div class="info-msg">
+            <i class="fa fa-info-circle"></i>
+            {{success_message}}
+        </div>
+        <script>
+            // Clear the success message after 3 seconds
+            setTimeout(function () {
+                document.querySelector('.info-msg').style.display = 'none';
+            }, 3000);
+        </script>
+        {{/if}}
+    </div>
+
     <form action="/login" method="post" class="bg-white p-8 rounded-lg shadow-lg">
         <!-- Your login form content goes here -->
 
@@ -48,33 +77,4 @@
         });
     </script>
 
-    {{#if error_messages}}
-    <div class="error-container text-center mb-4">
-        <div class="error-msg">
-            <i class="fa fa-times-circle"></i>
-            {{error_messages}}
-        </div>
-        <script>
-            // Clear the error message after 3 seconds
-            setTimeout(function () {
-                document.querySelector('.error-msg').style.display = 'none';
-            }, 3000);
-        </script>
-    </div>
-    {{/if}}
-
-    {{#if success_message}}
-    <div class="info-container text-center mb-4">
-        <div class="info-msg">
-            <i class="fa fa-info-circle"></i>
-            {{success_message}}
-        </div>
-        <script>
-            // Clear the success message after 3 seconds
-            setTimeout(function () {
-                document.querySelector('.info-msg').style.display = 'none';
-            }, 3000);
-        </script>
-    </div>
-    {{/if}}
 </div>

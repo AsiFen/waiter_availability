@@ -73,27 +73,41 @@ app.get('/login', async (req, res) => {
 
 app.post('/login', async (req, res) => {
     console.log(req.body);
+    let username = req.body.waitername;
     const waiter_passcode = req.body.waitercode;
     const admin_passcode = req.body.admincode;
-    let username = req.body.waitername;
-    const result = await waiterSchedule.valid_waiterName(username);
-    console.log(result);
-    if (result.errors) {
-        req.flash('errors', result.errors);
-    }
-    if (result.success) {
-        req.flash('success', result.success);
-    }
+    if (req.body.role === 'on') {
+        if (username.toLowerCase() === 'asisipho' && admin_passcode === 'asi123') {
+            res.redirect('/admin');
+        }
+        else {
+            req.flash('errors', 'Enter your correct admin details');
+            res.redirect('/login');
 
-    if (waiter_passcode.length === 6) {
-        res.redirect('/waiter/' + result.user)
-
+        }
+        
     } else {
-        req.flash('errors', 'Enter your 6 digit passcode.')
-        res.redirect('/login')
-    }
+        const result = await waiterSchedule.valid_waiterName(username);
+        console.log(result);
 
-})
+        if (result.errors) {
+            req.flash('errors', result.errors);
+            req.flash('success', ''); // Clear any previous success message
+        }  if (result.success) {
+            req.flash('success', result.success);
+            req.flash('errors', ''); // Clear any previous error message
+        }
+
+        if (waiter_passcode.length === 6) {
+            res.redirect('/waiter/' + result.user);
+        } else {
+            req.flash('errors', 'Enter your 6-digit passcode.');
+            req.flash('success', ''); // Clear any success message
+            res.redirect('/login');
+        }
+    }
+});
+
 
 // app.post('/waiter', waiterRoute.getWaiter)
 

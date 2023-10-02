@@ -1,6 +1,7 @@
 <div class="waiter_container flex justify-center">
     <div class="days mt-6 text-center">
-        <span class="heading text-center text-neutral-850 font-bold"> Add & update Shift</span>
+        <span class="heading text-center text-neutral-850 font-bold underline text-2xl"> Add & Update Shift</span>
+
 
         {{#if error_messages}}
         <div class="error-msg mb-4">
@@ -30,13 +31,12 @@
             }, 3000);
         </script>
 
-
-
+        {{#if username}}
         <div class="selection">
             <form action="/waiter/{{username}}" method="post">
-                <p class="text-xl text-neutral-900 underline mt-4 mb-4 ">{{username}}'s Roster</p>
+                <p class="text-2xl text-neutral-900 underline mt-4 mb-4 ">{{username}}'s Roster</p>
 
-                <fieldset class="border border-solid border-gray-500 p-5">
+                <fieldset class="border border-solid border-gray-500 p-10 w-120 mx-4 text-2xl">
                     <legend>Select 3 days: </legend>
                     <!-- Loop through the days of the week and their properties -->
                     {{#each schedule}}
@@ -52,7 +52,7 @@
                     done</button>
             </form>
         </div>
-
+        {{/if}}
     </div>
 </div>
 
