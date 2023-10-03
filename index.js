@@ -54,23 +54,9 @@ app.get('/', async (req, res) => {
 
 app.get('/admin', admin_route.showSchedule)
 
-app.get('/waiter/', async (req, res) => {
-    let username = req.params
-    res.render('waiter', {
-        username
-    });
-});
+app.get('/waiter/', login_route.waitername);
 
-app.get('/login', async (req, res) => {
-    let error_message = req.flash('errors')[0];
-    let success_message = req.flash('success')[0];
-
-    res.render('login', {
-        error_messages: error_message,
-        success_message
-
-    })
-})
+app.get('/login', login_route.display)
 
 app.post('/login', login_route.login);
 

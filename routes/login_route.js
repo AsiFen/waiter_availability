@@ -39,7 +39,27 @@ export default function LoginRoute(waiterSchedule, waiterDB) {
         }
     }
 
+    async function display(req, res, waiterDB) {
+        let error_message = req.flash('errors')[0];
+        let success_message = req.flash('success')[0];
+
+        res.render('login', {
+            error_messages: error_message,
+            success_message
+
+        })
+    }
+
+    async function waitername(req, res, waiterDB) {
+        let username = req.params
+        res.render('waiter', {
+            username
+        });
+    }
+
     return {
-        login
+        login,
+        display,
+        waitername
     }
 }

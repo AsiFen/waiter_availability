@@ -29,6 +29,7 @@ export default function WaiterRoute(waiterSchedule, waiterDB) {
             await waiterSchedule.daysToDelete(userList, username)
         }
             const result = await waiterSchedule.days(checks, username)
+            console.log(result);
             // check if there is an eror message
             if (result.errors) {
                 req.flash('errors', result.errors);
