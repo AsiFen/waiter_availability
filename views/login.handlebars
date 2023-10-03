@@ -41,7 +41,8 @@
             <label class="block text-gray-700 font-bold">Role:</label>
             <div class="relative inline-block w-10 align-middle select-none">
                 <input type="checkbox" name="role" id="role-checkbox"
-                    class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer">
+                    class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer 
+                    {{#if role_admin}}bg-green-500{{/if}}">
                 <label for="role-checkbox"
                     class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
             </div>
@@ -67,13 +68,16 @@
         document.getElementById('role-checkbox').addEventListener('change', function () {
             const waiterCodeInput = document.getElementById('waiter-code-input');
             const adminCodeInput = document.getElementById('admin-code-input');
+            const roleCheckbox = document.getElementById('role-checkbox');
 
-            if (this.checked) {
+            if (roleCheckbox.checked) {
                 waiterCodeInput.style.display = 'none';
                 adminCodeInput.style.display = 'block';
+                roleCheckbox.classList.add('bg-green-500'); // Add the green background color
             } else {
                 adminCodeInput.style.display = 'none';
                 waiterCodeInput.style.display = 'block';
+                roleCheckbox.classList.remove('bg-green-500'); // Remove the green background color
             }
         });
     </script>
