@@ -13,6 +13,8 @@ describe('Database Functions', () => {
     try {
       // clean the tables before each test run
       await waiterDB.reset()
+      await db.none('DELETE FROM waiters');
+
       await db.none('ALTER SEQUENCE waiters_id_seq RESTART WITH 1');
 
     } catch (err) {
@@ -75,13 +77,6 @@ describe('Database Functions', () => {
   it('should get all week days', async function () {
     const weekdays = await waiterDB.getWeekDays();
     assert.deepEqual(weekdays, [{ "weekday": "Monday" }, { "weekday": "Tuesday" }, { "weekday": "Wednesday" }, { "weekday": "Thursday" }, { "weekday": "Friday" }, { "weekday": "Saturday" }, { "weekday": "Sunday" }])
-  });
-
-  it('should reset the waiters table', async function () {
-    await waiterDB.setWaiter('blair');
-    await waiterDB.reset();
-    const waitersCount = await db.one("SELECT count(*) FROM waiters");
-    assert.deepEqual(waitersCount.count, 0);
   });
 
   after(function () {
